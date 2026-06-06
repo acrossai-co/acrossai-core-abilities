@@ -1,26 +1,27 @@
 <!--
   SYNC IMPACT REPORT
   ===================
-  Version change: UNVERSIONED (template) → 1.0.0
+  Version change: 1.0.0 → 1.1.0
   Date: 2026-06-07
 
-  Added sections (initial ratification — all sections are new):
-  - I. Plugin Identity & Purpose (inferred from project context: plugin header, README)
-  - II. WordPress Standards Compliance
-  - III. User-Centric Design (NON-NEGOTIABLE)
-  - IV. Security First (NON-NEGOTIABLE)
-  - V. Extensibility Without Core Modification
-  - VI. Reusability & DRY Principle
-  - VII. Definition of Done
-  - Architecture & UI Standards
-  - Governance
+  Changed sections:
+  - §Architecture & UI Standards → Boot Flow Rule: reworded from mandatory to forward guidance
+    (admin/public layers removed in feature 001; rule now describes the pattern to follow
+    when those layers are re-introduced, not a current requirement)
+  - §Architecture & UI Standards → Admin Rule: reworded from mandatory to forward guidance
+    (same rationale as Boot Flow Rule)
 
   Removed sections: none
+  Added sections: none
 
-  Templates updated:
-  - .specify/templates/plan-template.md ✅ (Constitution Check gates filled in)
-  - .specify/templates/tasks-template.md ✅ (Polish phase updated with DoD checklist items)
+  Templates reviewed:
+  - .specify/templates/plan-template.md ✅ (reviewed — Constitution Check references unchanged; no Boot Flow / Admin Rule text present)
+  - .specify/templates/tasks-template.md ✅ (reviewed — no Boot Flow / Admin Rule text present)
   - .specify/templates/spec-template.md ✅ (reviewed — no changes required)
+
+  Previous report (1.0.0 ratification):
+  Version change: UNVERSIONED (template) → 1.0.0 | Date: 2026-06-07
+  Added sections: all (initial ratification)
 
   Deferred TODOs: none
 -->
@@ -117,18 +118,21 @@ A feature is ONLY considered complete when ALL of the following pass:
 
 ## Architecture & UI Standards
 
-**Boot Flow Rule**: One central file is the single source of all hook registration. All hooks trace
-to `define_admin_hooks()` / `define_public_hooks()` with no intermediate delegation. All feature
-classes use the singleton `instance()` pattern. Resolve each singleton to a named variable before
-passing to the loader — never inline.
+**Boot Flow Rule**: `includes/Main.php` is the single source of all hook registration.
+When the plugin grows to need admin or public layers, hooks for those layers MUST be
+registered via dedicated `define_admin_hooks()` / `define_public_hooks()` methods on the
+bootstrap class — with no intermediate delegation. All feature classes use the singleton
+`instance()` pattern. Resolve each singleton to a named variable before passing to the
+loader — never inline.
 
 **REST Controller Pattern**: Split into per-domain sub-controllers when a controller exceeds ~400
 lines or spans more than one user story. Sub-controllers live in a `Rest/` subdirectory inside the
 module. The top-level controller is a thin orchestrator owning only: namespace constant,
 `register_routes()` delegation, and shared `check_permission()`.
 
-**Admin Rule**: Any class that calls `add_menu_page()`, enqueues assets, or renders HTML MUST live
-in the admin partials layer. Module classes are context-neutral.
+**Admin Rule**: When admin UI is introduced, any class that calls `add_menu_page()`,
+enqueues assets, or renders HTML MUST live in a dedicated `admin/Partials/` namespace.
+Module classes under `includes/` are context-neutral and MUST NOT call admin-only APIs.
 
 **Database**: Direct SQL is permitted only with `$wpdb->prepare()`. Prefer WordPress options/meta
 APIs for simple key-value storage. Custom tables only when the data model genuinely cannot fit
@@ -148,4 +152,4 @@ This constitution supersedes all other development practices.
 4. Record a sync impact report
 5. Commit with message: `docs: amend constitution to vX.Y.Z (<summary>)`
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-07 | **Last Amended**: 2026-06-07
+**Version**: 1.1.0 | **Ratified**: 2026-06-07 | **Last Amended**: 2026-06-07

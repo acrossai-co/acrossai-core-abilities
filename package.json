@@ -14,13 +14,7 @@
 		"url": "https://github.com/wpboilerplate/acrossai-core-abilities/issues"
 	},
 	"scripts": {
-		"build": "wp-scripts build",
 		"format": "wp-scripts format",
-		"lint:css": "wp-scripts lint-style",
-		"lint:js": "wp-scripts lint-js",
-		"packages-update": "wp-scripts packages-update",
-		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start",
 		"env": "wp-env",
 		"env:start": "wp-env start",
 		"env:stop": "wp-env stop",
@@ -38,22 +32,9 @@
 		"@agents-dev/cli": "^0.8.7",
 		"@wordpress/env": "latest",
 		"@wordpress/eslint-plugin": "latest",
-		"@wordpress/prettier-config": "latest",
-		"@wordpress/scripts": "latest",
-		"@wordpress/stylelint-config": "latest",
-		"copy-webpack-plugin": "latest",
-		"glob": "^13.0.6",
-		"mini-css-extract-plugin": "latest",
-		"path": "latest",
-		"webpack-remove-empty-scripts": "latest"
-	},
-	"dependencies": {
-		"@wordpress/icons": "latest"
+		"@wordpress/prettier-config": "latest"
 	},
 	"prettier": "@wordpress/prettier-config",
-	"stylelint": {
-		"extends": "@wordpress/stylelint-config/scss"
-	},
 	"keywords": [
 		"acrossai-core-abilities"
 	]

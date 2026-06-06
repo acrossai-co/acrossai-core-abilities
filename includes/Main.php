@@ -171,14 +171,13 @@ final class Main {
 	public function load_hooks() {
 
 		/**
-		 * Check if plugin can be loaded safely or not
+		 * Reserved for future hook registration.
+		 *
+		 * Use the `acrossai_core_abilities_load` filter to gate plugin loading.
 		 *
 		 * @since    0.0.1
 		 */
-		if ( apply_filters( 'acrossai_core_abilities_load', true ) ) {
-			$this->define_admin_hooks();
-			$this->define_public_hooks();
-		}
+		apply_filters( 'acrossai_core_abilities_load', true );
 	}
 
 	/**
@@ -201,16 +200,6 @@ final class Main {
 
 	/**
 	 * Load the required dependencies for this plugin.
-	 *
-	 * Include the following files that make up the plugin:
-	 *
-	 * - Acrossai_Core_Abilities\Admin\Loader. Orchestrates the hooks of the plugin.
-	 * - Acrossai_Core_Abilities\Admin\I18n. Defines internationalization functionality.
-	 * - Acrossai_Core_Abilities\Admin\Main. Defines all hooks for the admin area.
-	 * - Acrossai_Core_Abilities_Public. Defines all hooks for the public side of the site.
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
 	 *
 	 * @since    0.0.1
 	 * @access   private
@@ -236,45 +225,6 @@ final class Main {
 		$this->loader->add_action( 'init', $i18n, 'do_load_textdomain' );
 	}
 
-
-	/**
-	 * Register all of the hooks related to the admin area functionality
-	 * of the plugin.
-	 *
-	 * @since    0.0.1
-	 * @access   private
-	 */
-	private function define_admin_hooks() {
-
-		$plugin_admin = new \Acrossai_Core_Abilities\Admin\Main( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
-		/**
-		 * Add the Plugin Main Menu
-		 */
-		$main_menu = new \Acrossai_Core_Abilities\Admin\Partials\Menu( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'admin_menu', $main_menu, 'main_menu' );
-		$this->loader->add_action( 'plugin_action_links', $main_menu, 'plugin_action_links', 1000, 2 );
-	}
-
-	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
-	 *
-	 * @since    0.0.1
-	 * @access   private
-	 */
-	private function define_public_hooks() {
-
-		$plugin_public = new \Acrossai_Core_Abilities\Public\Main( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-	}
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.

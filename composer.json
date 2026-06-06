@@ -24,15 +24,12 @@
 	],
 	"autoload": {
 		"psr-4": {
-			"Acrossai_Core_Abilities\\Includes\\": "includes/",
-			"Acrossai_Core_Abilities\\Admin\\": "admin/",
-			"Acrossai_Core_Abilities\\Public\\": "public/"
+			"Acrossai_Core_Abilities\\Includes\\": "includes/"
 		}
 	},
 	"require-dev": {
 		"wp-coding-standards/wpcs": "*",
-		"dealerdirect/phpcodesniffer-composer-installer": "^1.2",
-		"phpunit/phpunit": "^13.2@dev"
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.2"
 	},
 	"config": {
 		"allow-plugins": {

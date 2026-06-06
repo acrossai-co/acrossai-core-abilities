@@ -41,9 +41,7 @@
     <config name="testVersion" value="7.4-"/>
 
     <!-- Whitelist the WP Core admin actions to prevent false positives -->
-    <rule ref="WordPress.WP.GlobalVariablesOverride">
-        <exclude-pattern>*/admin/*</exclude-pattern>
-    </rule>
+    <rule ref="WordPress.WP.GlobalVariablesOverride"/>
 
     <!-- Allow plugin file header -->
     <rule ref="Squiz.Commenting.FileComment">
