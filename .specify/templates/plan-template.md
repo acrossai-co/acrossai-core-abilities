@@ -3,7 +3,7 @@
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
+**Note**: This template is filled in by the `/speckit-plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
 
 ## Summary
 
@@ -31,7 +31,15 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] **II. WP Standards**: PHPCS (WPCS strict), PHPStan level 8, ESLint — all pass with zero errors
+- [ ] **III. User-Centric**: All admin input MUST use `DataForm`; all listings MUST use `@wordpress/dataviews`
+- [ ] **IV. Security**: Nonces, capability checks (`manage_options`+), `$wpdb->prepare()`,
+      sanitization, and escaping verified at every boundary
+- [ ] **V. Extensibility**: Feature implemented via hooks/extension points — no core file modifications
+- [ ] **VI. DRY**: No duplicated logic; `@wordpress/*` packages preferred; `npm run validate-packages` passes
+- [ ] **VII. DoD**: All Definition of Done checklist items complete before marking feature done
+- [ ] **Architecture**: Boot flow rule, REST controller pattern, Admin rule, DB guidelines,
+      and integration resilience all satisfied
 
 ## Project Structure
 
@@ -39,12 +47,12 @@
 
 ```text
 specs/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+├── plan.md              # This file (/speckit-plan command output)
+├── research.md          # Phase 0 output (/speckit-plan command)
+├── data-model.md        # Phase 1 output (/speckit-plan command)
+├── quickstart.md        # Phase 1 output (/speckit-plan command)
+├── contracts/           # Phase 1 output (/speckit-plan command)
+└── tasks.md             # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
 ```
 
 ### Source Code (repository root)

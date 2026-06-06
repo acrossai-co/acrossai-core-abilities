@@ -29,7 +29,7 @@ description: "Task list template for feature implementation"
   ============================================================================
   IMPORTANT: The tasks below are SAMPLE TASKS for illustration purposes only.
   
-  The /speckit.tasks command MUST replace these with actual tasks based on:
+  The /speckit-tasks command MUST replace these with actual tasks based on:
   - User stories from spec.md (with their priorities P1, P2, P3...)
   - Feature requirements from plan.md
   - Entities from data-model.md
@@ -148,14 +148,17 @@ Examples of foundational tasks (adjust based on your project):
 
 ## Phase N: Polish & Cross-Cutting Concerns
 
-**Purpose**: Improvements that affect multiple user stories
+**Purpose**: Improvements that affect multiple user stories, and final Definition of Done sign-off
 
 - [ ] TXXX [P] Documentation updates in docs/
-- [ ] TXXX Code cleanup and refactoring
+- [ ] TXXX Code cleanup and refactoring — eliminate any DRY violations
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
-- [ ] TXXX Security hardening
+- [ ] TXXX Security hardening — confirm nonces, capabilities, sanitization, escaping at all boundaries
 - [ ] TXXX Run quickstart.md validation
+- [ ] TXXX **DoD gate**: PHPCS zero errors/warnings, PHPStan level 8 zero errors, ESLint zero errors
+- [ ] TXXX **DoD gate**: `npm run validate-packages` passes
+- [ ] TXXX **DoD gate**: All functions, hooks, and classes carry consistent plugin prefix
 
 ---
 
