@@ -22,6 +22,7 @@ const PLUGIN_ROOT = process.cwd();
 const SKILLPACK_DIR = path.join(PLUGIN_ROOT, '.agents', 'skills');
 
 const SOURCES = [
+	{ repo: 'acrossai-co/agent-skills', label: 'AcrossAI' },
 	{ repo: 'WPBoilerplate/agent-skills', label: 'WPBoilerplate' },
 	{ repo: 'WordPress/agent-skills', label: 'WordPress' },
 ];
