@@ -5,8 +5,6 @@
 
 /node_modules
 
-/src
-
 .gitattributes
 .distignore
 .gitignore

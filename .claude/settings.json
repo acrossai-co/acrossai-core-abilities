@@ -4,7 +4,6 @@
 			"Read(.git/**)",
 			"Read(.github/skills/**)",
 			"Read(node_modules/**)",
-			"Read(build/**)",
 			"Read(vendor/wp-coding-standards/**)",
 			"Read(vendor/dealerdirect/**)",
 			"Read(vendor/phpunit/**)",

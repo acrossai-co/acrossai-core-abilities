@@ -13,7 +13,6 @@ shell commands, and other important information, read the current plan
 - `.git/`
 - `.github/skills/`
 - `node_modules/`
-- `build/`
 - `vendor/wp-coding-standards/`
 - `vendor/dealerdirect/`
 - `vendor/phpunit/`

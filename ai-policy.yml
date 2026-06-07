@@ -23,7 +23,6 @@ hard_ignore:
   - .git/                            # Git internals
   - .github/skills/                  # Auto-generated agent skill bundles (npm run skills:install)
   - node_modules/                    # All Node.js packages — too large, all tooling
-  - build/                           # Compiled JS/CSS output (generated from src/)
   - vendor/wp-coding-standards/      # require-dev: wp-coding-standards/wpcs
   - vendor/dealerdirect/             # require-dev: dealerdirect/phpcodesniffer-composer-installer
   - vendor/phpunit/                  # require-dev: phpunit/phpunit

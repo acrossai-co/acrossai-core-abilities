@@ -2,8 +2,6 @@ parameters:
     level: 5
     paths:
         - includes/
-        - admin/
-        - public/
         - acrossai-core-abilities.php
 
     excludePaths:
