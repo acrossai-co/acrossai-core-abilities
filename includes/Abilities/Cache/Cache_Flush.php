@@ -1,0 +1,77 @@
+<?php
+namespace Acrossai_Core_Abilities\Includes\Abilities\Cache;
+
+use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+
+defined( 'ABSPATH' ) || exit;
+
+class Cache_Flush extends Ability_Definition {
+
+	protected function main_key(): string {
+		return 'acrossai-core-cache';
+	}
+
+	protected function main_key_label(): string {
+		return __( 'Acrossai Core Cache', 'acrossai-core-abilities' );
+	}
+
+	protected function sub_key(): string {
+		return 'cache-flush';
+	}
+
+	protected function sub_key_label(): string {
+		return __( 'Flush Cache', 'acrossai-core-abilities' );
+	}
+
+	protected function ability(): array {
+		return array(
+			'name' => 'wp-agentic-admin/cache-flush',
+			'args' => array(
+				'label'               => __( 'Flush Object Cache', 'acrossai-core-abilities' ),
+				'description'         => __( 'Flushes the entire WordPress object cache via wp_cache_flush(). Useful after data changes when stale cached values may be served.', 'acrossai-core-abilities' ),
+				'category'            => 'acrossai-core-abilities-cache',
+				'execute_callback'    => array( $this, 'execute' ),
+				'permission_callback' => static function (): bool {
+					return current_user_can( 'manage_options' );
+				},
+				'input_schema'        => array(
+					'type'                 => 'object',
+					'default'              => array(),
+					'properties'           => array(),
+					'additionalProperties' => false,
+				),
+				'output_schema'       => array(
+					'type'       => 'object',
+					'properties' => array(
+						'success' => array( 'type' => 'boolean' ),
+						'message' => array( 'type' => 'string' ),
+					),
+					'required'   => array( 'success', 'message' ),
+					'additionalProperties' => false,
+				),
+				'meta'                => array(
+					'show_in_rest' => true,
+					'mcp'          => array(
+						'public' => true,
+						'type'   => 'tool',
+					),
+					'annotations'  => array(
+						'readonly'    => false,
+						'destructive' => false,
+						'idempotent'  => true,
+					),
+				),
+			),
+		);
+	}
+
+	public function execute( array $input = array() ): array {
+		$ok = wp_cache_flush();
+		return array(
+			'success' => (bool) $ok,
+			'message' => $ok
+				? __( 'Object cache flushed.', 'acrossai-core-abilities' )
+				: __( 'wp_cache_flush() returned false; the active object cache may not support flushing.', 'acrossai-core-abilities' ),
+		);
+	}
+}

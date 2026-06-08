@@ -1,0 +1,123 @@
+<?php
+namespace Acrossai_Core_Abilities\Includes\Abilities\Plugins;
+
+use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+
+defined( 'ABSPATH' ) || exit;
+
+class Update_Check extends Ability_Definition {
+
+	protected function main_key(): string {
+		return 'acrossai-core-plugins';
+	}
+
+	protected function main_key_label(): string {
+		return __( 'Acrossai Core Plugins', 'acrossai-core-abilities' );
+	}
+
+	protected function sub_key(): string {
+		return 'update-check';
+	}
+
+	protected function sub_key_label(): string {
+		return __( 'Check Updates', 'acrossai-core-abilities' );
+	}
+
+	protected function ability(): array {
+		return array(
+			'name' => 'acrossai-core-abilities/update-check',
+			'args' => array(
+				'label'               => __( 'Check Updates', 'acrossai-core-abilities' ),
+				'description'         => __( 'Check for available WordPress core, plugin, and theme updates.', 'acrossai-core-abilities' ),
+				'category'            => 'acrossai-core-abilities-plugins',
+				'execute_callback'    => array( $this, 'execute' ),
+				'permission_callback' => static function (): bool {
+					return current_user_can( 'manage_options' );
+				},
+				'input_schema'        => array(
+					'type'                 => 'object',
+					'default'              => array(),
+					'properties'           => array(),
+					'additionalProperties' => false,
+				),
+				'output_schema'       => array(
+					'type'       => 'object',
+					'properties' => array(
+						'core'    => array( 'type' => 'object', 'description' => __( 'Core update info.', 'acrossai-core-abilities' ) ),
+						'plugins' => array( 'type' => 'array', 'description' => __( 'Plugins with available updates.', 'acrossai-core-abilities' ) ),
+						'themes'  => array( 'type' => 'array', 'description' => __( 'Themes with available updates.', 'acrossai-core-abilities' ) ),
+						'total'   => array( 'type' => 'integer', 'description' => __( 'Total number of available updates.', 'acrossai-core-abilities' ) ),
+					),
+				),
+				'meta'                => array(
+					'show_in_rest' => true,
+					'mcp'          => array(
+						'public' => true,
+						'type'   => 'tool',
+					),
+					'annotations'  => array(
+						'readonly'    => true,
+						'destructive' => false,
+						'idempotent'  => true,
+					),
+				),
+			),
+		);
+	}
+
+	public function execute( array $input = array() ): array {
+		if ( ! function_exists( 'get_core_updates' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/update.php';
+		}
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$core_updates = get_core_updates();
+		$core_info    = array(
+			'current'     => get_bloginfo( 'version' ),
+			'available'   => false,
+			'new_version' => '',
+		);
+
+		if ( ! empty( $core_updates ) && 'upgrade' === $core_updates[0]->response ) {
+			$core_info['available']   = true;
+			$core_info['new_version'] = $core_updates[0]->version;
+		}
+
+		$plugin_updates  = get_plugin_updates();
+		$plugins_needing = array();
+
+		foreach ( $plugin_updates as $file => $data ) {
+			$plugins_needing[] = array(
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress plugin data properties.
+				'name'        => $data->Name,
+				'slug'        => $file,
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				'current'     => $data->Version,
+				'new_version' => $data->update->new_version,
+			);
+		}
+
+		$theme_updates  = get_theme_updates();
+		$themes_needing = array();
+
+		foreach ( $theme_updates as $slug => $theme ) {
+			$themes_needing[] = array(
+				'name'        => $theme->get( 'Name' ),
+				'slug'        => $slug,
+				'current'     => $theme->get( 'Version' ),
+				'new_version' => $theme->update['new_version'],
+			);
+		}
+
+		$total = ( $core_info['available'] ? 1 : 0 ) + count( $plugins_needing ) + count( $themes_needing );
+
+		return array(
+			'core'    => $core_info,
+			'plugins' => $plugins_needing,
+			'themes'  => $themes_needing,
+			'total'   => $total,
+		);
+	}
+}

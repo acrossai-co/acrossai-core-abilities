@@ -1,5 +1,61 @@
 # Plugin hooks reference — acrossai_abilities_api_init
 
+## Ability_Definition — class-based authoring API
+
+`AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition` is the recommended way to author abilities. It wires the filter automatically and enforces the definition contract at the class level.
+
+### Abstract methods
+
+| Method | Return type | Maps to definition field |
+|--------|-------------|--------------------------|
+| `main_key()` | `string` | `main_key` |
+| `main_key_label()` | `string` | `main_key_label` |
+| `sub_key()` | `string` | `sub_key` |
+| `sub_key_label()` | `string` | `sub_key_label` |
+| `ability()` | `array` | `name` + `args` (see below) |
+
+`ability()` must return:
+
+```php
+[
+    'name' => 'plugin-slug/ability-slug',  // WordPress ability ID
+    'args' => [
+        'label'            => '...',
+        'description'      => '...',
+        'category'         => '...',
+        'execute_callback' => [ $this, 'execute' ],
+        'meta'             => [ 'show_in_rest' => true ],
+    ],
+]
+```
+
+### How the constructor wires the filter
+
+```php
+public function __construct() {
+    add_filter( 'acrossai_abilities_api_init', [ $this, 'push_definition' ] );
+}
+```
+
+`push_definition()` is a public method on the base class. It calls all five abstract methods and appends the assembled definition to `$definitions`. You never call it directly.
+
+### Instantiation requirement
+
+Each ability class must be instantiated **before `init P99`** (when the Registry fires). The canonical place is `plugins_loaded P20`, guarded by `class_exists`:
+
+```php
+add_action( 'plugins_loaded', function () {
+    if ( ! class_exists( '\AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition' ) ) {
+        return; // Manager not active.
+    }
+    new \My_Plugin\Includes\Abilities\Get_Site_Info();
+}, 20 );
+```
+
+Do **not** instantiate at `init` — the Registry fires at `init P99`, which may be the same request cycle in which your class is loaded.
+
+---
+
 ## The filter contract
 
 ```
@@ -70,6 +126,63 @@ After validation:
 
 ## Multi-ability example (two sub_keys under one main_key)
 
+### Class-based (recommended)
+
+```php
+// includes/Abilities/Summarize.php
+class Summarize extends Ability_Definition {
+    protected function main_key(): string       { return 'content-tools'; }
+    protected function main_key_label(): string { return __( 'Content Tools', 'my-plugin' ); }
+    protected function sub_key(): string        { return 'summarize'; }
+    protected function sub_key_label(): string  { return __( 'Summarize', 'my-plugin' ); }
+
+    protected function ability(): array {
+        return [
+            'name' => 'my-plugin/summarize',
+            'args' => [
+                'label'            => __( 'Summarize Content', 'my-plugin' ),
+                'description'      => __( 'Generates a summary of provided text.', 'my-plugin' ),
+                'category'         => 'content-tools',
+                'execute_callback' => [ $this, 'execute' ],
+                'meta'             => [ 'show_in_rest' => true ],
+            ],
+        ];
+    }
+
+    public function execute( array $input = [] ): array { /* ... */ }
+}
+
+// includes/Abilities/Generate.php
+class Generate extends Ability_Definition {
+    protected function main_key(): string       { return 'content-tools'; }
+    protected function main_key_label(): string { return __( 'Content Tools', 'my-plugin' ); }
+    protected function sub_key(): string        { return 'generate'; }
+    protected function sub_key_label(): string  { return __( 'Generate', 'my-plugin' ); }
+
+    protected function ability(): array {
+        return [
+            'name' => 'my-plugin/generate',
+            'args' => [
+                'label'               => __( 'Generate Content', 'my-plugin' ),
+                'description'         => __( 'Generates new content from a prompt.', 'my-plugin' ),
+                'category'            => 'content-tools',
+                'execute_callback'    => [ $this, 'execute' ],
+                'permission_callback' => fn() => current_user_can( 'edit_posts' ),
+                'meta'                => [ 'show_in_rest' => true ],
+            ],
+        ];
+    }
+
+    public function execute( array $input = [] ): array { /* ... */ }
+}
+
+// Bootstrap (plugins_loaded P20)
+new \My_Plugin\Includes\Abilities\Summarize();
+new \My_Plugin\Includes\Abilities\Generate();
+```
+
+### Raw filter (alternative)
+
 ```php
 add_filter( 'acrossai_abilities_api_init', function( array $definitions ): array {
 
@@ -95,12 +208,12 @@ add_filter( 'acrossai_abilities_api_init', function( array $definitions ): array
         'sub_key_label'  => __( 'Generate', 'my-plugin' ),
         'name'           => 'my-plugin/generate',
         'args'           => [
-            'label'            => __( 'Generate Content', 'my-plugin' ),
-            'description'      => __( 'Generates new content from a prompt.', 'my-plugin' ),
-            'category'         => 'content-tools',
-            'execute_callback' => 'my_plugin_generate',
+            'label'               => __( 'Generate Content', 'my-plugin' ),
+            'description'         => __( 'Generates new content from a prompt.', 'my-plugin' ),
+            'category'            => 'content-tools',
+            'execute_callback'    => 'my_plugin_generate',
             'permission_callback' => function() { return current_user_can( 'edit_posts' ); },
-            'meta'             => [ 'show_in_rest' => true ],
+            'meta'                => [ 'show_in_rest' => true ],
         ],
     ];
 
@@ -108,7 +221,7 @@ add_filter( 'acrossai_abilities_api_init', function( array $definitions ): array
 } );
 ```
 
-Both definitions share `main_key = 'content-tools'` → they appear under one card in the Library grid with two checkboxes when Specific mode is active.
+Both approaches produce the same result: `main_key = 'content-tools'` → one card in the Library grid with two checkboxes (Summarize, Generate) when Specific mode is active.
 
 ---
 
