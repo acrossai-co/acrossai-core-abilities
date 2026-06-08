@@ -1,6 +1,10 @@
 <?php
 namespace Acrossai_Core_Abilities\Includes;
 
+use Acrossai_Core_Abilities\Includes\Abilities\Cache;
+use Acrossai_Core_Abilities\Includes\Abilities\Database;
+use Acrossai_Core_Abilities\Includes\Abilities\Plugins;
+
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
@@ -178,6 +182,51 @@ final class Main {
 		 * @since    0.0.1
 		 */
 		apply_filters( 'acrossai_core_abilities_load', true );
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Plugins\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Cache\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Database\Category_Registrar::instance(),
+			'register'
+		);
+
+		add_action(
+			'plugins_loaded',
+			static function (): void {
+				if ( ! class_exists( '\AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition' ) ) {
+					return;
+				}
+				new Plugins\Plugin_Activate();
+				new Plugins\Plugin_Deactivate();
+				new Plugins\Plugin_Install();
+				new Plugins\Plugin_List();
+				new Plugins\Update_Check();
+				new Cache\Cache_Flush();
+				new Cache\Cache_Transient_Flush();
+				new Cache\Cache_Rewrite_Flush();
+				new Database\Schema_Extract();
+				new Database\Db_Select();
+				new Database\Db_Insert();
+				new Database\Db_Update();
+				new Database\Db_Delete();
+				new Database\Tables_List();
+				new Database\Db_Explain();
+				new Database\Db_Stats();
+				new Database\Db_Optimize();
+			},
+			20
+		);
 	}
 
 	/**
