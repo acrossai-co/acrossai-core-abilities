@@ -5,6 +5,12 @@
 	"description": "Composer to autoload the condition checking for which this add-on is made",
 	"homepage": "https://github.com/WPBoilerplate/",
 	"minimum-stability": "dev",
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/WPBoilerplate/wpb-updater-checker-github"
+		}
+	],
 	"require": {
 		"php": ">=7.4",
 		"automattic/jetpack-autoloader": "^5.0",

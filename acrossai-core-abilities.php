@@ -89,6 +89,16 @@ function acrossai_core_abilities_run() {
 
 	$plugin = Main::instance();
 
+	new \WPBoilerplate_Updater_Checker_Github(
+		array(
+			'repo'           => 'https://github.com/acrossai-co/acrossai-core-abilities',
+			'file_path'      => ACROSSAI_CORE_ABILITIES_PLUGIN_FILE,
+			'name_slug'      => 'acrossai-core-abilities',
+			'release_branch' => 'main',
+			'release-assets' => true,
+		)
+	);
+
 	/**
 	 * Run this plugin on the plugins_loaded functions
 	 */
