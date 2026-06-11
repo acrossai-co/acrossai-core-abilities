@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Cache_Flush extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-cache';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Cache', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'cache-flush';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Flush Cache', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/cache-flush',
+			'name' => 'acrossai-core-abilities/cache-flush',
 			'args' => array(
 				'label'               => __( 'Flush Object Cache', 'acrossai-core-abilities' ),
 				'description'         => __( 'Flushes the entire WordPress object cache via wp_cache_flush(). Useful after data changes when stale cached values may be served.', 'acrossai-core-abilities' ),

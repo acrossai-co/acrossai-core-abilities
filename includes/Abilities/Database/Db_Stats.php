@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Db_Stats extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-database';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Database', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'db-stats';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Database Stats', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/db-stats',
+			'name' => 'acrossai-core-abilities/db-stats',
 			'args' => array(
 				'label'               => __( 'Database Stats', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns a summary of the WordPress database: version, name, table count, total size, charset, and collation.', 'acrossai-core-abilities' ),

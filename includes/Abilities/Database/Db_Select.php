@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Db_Select extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-database';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Database', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'db-select';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Run SELECT Query', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/db-select',
+			'name' => 'acrossai-core-abilities/db-select',
 			'args' => array(
 				'label'               => __( 'Run SELECT Query', 'acrossai-core-abilities' ),
 				'description'         => __( 'Executes a read-only SQL query (SELECT, SHOW, DESCRIBE, EXPLAIN). Write statements are rejected. Results are capped by the limit parameter.', 'acrossai-core-abilities' ),

@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Db_Explain extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-database';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Database', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'db-explain';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Explain Query', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/db-explain',
+			'name' => 'acrossai-core-abilities/db-explain',
 			'args' => array(
 				'label'               => __( 'Explain Query', 'acrossai-core-abilities' ),
 				'description'         => __( 'Runs EXPLAIN on a SELECT query and returns the MySQL query execution plan. Useful for diagnosing slow queries.', 'acrossai-core-abilities' ),

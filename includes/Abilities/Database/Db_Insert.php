@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Db_Insert extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-database';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Database', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'db-insert';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Insert Row', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/db-insert',
+			'name' => 'acrossai-core-abilities/db-insert',
 			'args' => array(
 				'label'               => __( 'Insert Row', 'acrossai-core-abilities' ),
 				'description'         => __( 'Inserts a single row into a database table using $wpdb->insert() (values are auto-escaped). Not idempotent — each call adds a new row.', 'acrossai-core-abilities' ),

@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Tables_List extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-database';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Database', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'tables-list';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'List Tables', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/tables-list',
+			'name' => 'acrossai-core-abilities/tables-list',
 			'args' => array(
 				'label'               => __( 'List Database Tables', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists all tables in the database with engine, approximate row count, and storage size.', 'acrossai-core-abilities' ),

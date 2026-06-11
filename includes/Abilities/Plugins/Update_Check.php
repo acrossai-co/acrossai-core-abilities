@@ -7,22 +7,6 @@ defined( 'ABSPATH' ) || exit;
 
 class Update_Check extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-plugins';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Plugins', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'update-check';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Check Updates', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
 			'name' => 'acrossai-core-abilities/update-check',

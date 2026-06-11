@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Db_Optimize extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-database';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Database', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'db-optimize';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Optimize Tables', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/db-optimize',
+			'name' => 'acrossai-core-abilities/db-optimize',
 			'args' => array(
 				'label'               => __( 'Optimize Database Tables', 'acrossai-core-abilities' ),
 				'description'         => __( 'Runs OPTIMIZE TABLE on the specified tables. Defaults to all WordPress-prefixed tables when no tables are provided. Reclaims unused space and defragments data files.', 'acrossai-core-abilities' ),

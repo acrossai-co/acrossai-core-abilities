@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Cache_Transient_Flush extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-cache';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Cache', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'transient-flush';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Flush Transients', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/transient-flush',
+			'name' => 'acrossai-core-abilities/transient-flush',
 			'args' => array(
 				'label'               => __( 'Flush Transients', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deletes WordPress transients. Use scope "expired" (default) to remove only expired transients, or "all" to remove every transient regardless of expiry.', 'acrossai-core-abilities' ),

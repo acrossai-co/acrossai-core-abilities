@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Schema_Extract extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-database';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Database', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'schema-extract';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Extract Database Schema', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/schema-extract',
+			'name' => 'acrossai-core-abilities/schema-extract',
 			'args' => array(
 				'label'               => __( 'Extract Database Schema', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns the full schema for every table in the database: columns, indexes, and CREATE TABLE SQL.', 'acrossai-core-abilities' ),

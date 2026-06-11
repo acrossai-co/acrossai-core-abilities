@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Cache_Rewrite_Flush extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-cache';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Cache', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'rewrite-flush';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Flush Rewrite Rules', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/rewrite-flush',
+			'name' => 'acrossai-core-abilities/rewrite-flush',
 			'args' => array(
 				'label'               => __( 'Flush Rewrite Rules', 'acrossai-core-abilities' ),
 				'description'         => __( 'Flushes WordPress rewrite rules via flush_rewrite_rules(). Use hard=true (default) to also regenerate the .htaccess file, or hard=false for an in-memory-only rebuild.', 'acrossai-core-abilities' ),

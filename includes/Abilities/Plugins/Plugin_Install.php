@@ -8,22 +8,6 @@ defined( 'ABSPATH' ) || exit;
 
 class Plugin_Install extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-plugins';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Plugins', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'plugin-install';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Install Plugin', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
 			'name' => 'acrossai-core-abilities/plugin-install',

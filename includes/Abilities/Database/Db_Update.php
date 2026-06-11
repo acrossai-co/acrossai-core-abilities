@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Db_Update extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-database';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Database', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'db-update';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Update Rows', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/db-update',
+			'name' => 'acrossai-core-abilities/db-update',
 			'args' => array(
 				'label'               => __( 'Update Rows', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates rows matching the where clause using $wpdb->update() (values are auto-escaped). Requires a non-empty where to prevent accidental full-table updates.', 'acrossai-core-abilities' ),

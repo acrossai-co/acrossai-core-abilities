@@ -7,25 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Db_Delete extends Ability_Definition {
 
-	protected function main_key(): string {
-		return 'acrossai-core-database';
-	}
-
-	protected function main_key_label(): string {
-		return __( 'Acrossai Core Database', 'acrossai-core-abilities' );
-	}
-
-	protected function sub_key(): string {
-		return 'db-delete';
-	}
-
-	protected function sub_key_label(): string {
-		return __( 'Delete Rows', 'acrossai-core-abilities' );
-	}
-
 	protected function ability(): array {
 		return array(
-			'name' => 'wp-agentic-admin/db-delete',
+			'name' => 'acrossai-core-abilities/db-delete',
 			'args' => array(
 				'label'               => __( 'Delete Rows', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deletes rows matching the where clause using $wpdb->delete() (values are auto-escaped). Requires a non-empty where to prevent accidental full-table deletion.', 'acrossai-core-abilities' ),
