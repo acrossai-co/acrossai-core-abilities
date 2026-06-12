@@ -1,0 +1,64 @@
+name: Build & Attach Plugin ZIP to Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to attach the ZIP to (e.g. v0.0.2)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build plugin ZIP
+    runs-on: ubuntu-latest
+    env:
+      PLUGIN_SLUG: acrossai-core-abilities
+    steps:
+      - name: Resolve tag
+        id: tag
+        run: echo "ref=${{ github.event.release.tag_name || inputs.tag }}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.tag.outputs.ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
+          coverage: none
+          tools: composer:v2
+
+      - name: Install production composer deps
+        run: composer install --no-dev --optimize-autoloader --classmap-authoritative --no-interaction --no-progress
+
+      - name: Build plugin folder honoring .distignore
+        run: |
+          set -euo pipefail
+          BUILD_PARENT="$(mktemp -d)"
+          BUILD_DIR="${BUILD_PARENT}/${PLUGIN_SLUG}"
+          mkdir -p "$BUILD_DIR"
+
+          # Convert .distignore (anchored paths use leading /) into rsync excludes
+          sed 's|^/||' .distignore | grep -v '^\s*$' | grep -v '^#' > /tmp/rsync-excludes.txt
+          # Always exclude these regardless of what .distignore says
+          printf '%s\n' '.git' '.github' '.distignore' >> /tmp/rsync-excludes.txt
+
+          rsync -a --exclude-from=/tmp/rsync-excludes.txt ./ "$BUILD_DIR/"
+
+          cd "$BUILD_PARENT"
+          zip -rq "${GITHUB_WORKSPACE}/${PLUGIN_SLUG}.zip" "$PLUGIN_SLUG"
+          echo "ZIP_PATH=${GITHUB_WORKSPACE}/${PLUGIN_SLUG}.zip" >> "$GITHUB_ENV"
+
+      - name: Upload ZIP to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.ref }}
+          files: ${{ env.ZIP_PATH }}
+          fail_on_unmatched_files: true
