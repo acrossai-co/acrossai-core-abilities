@@ -1,6 +1,7 @@
 <?php
 namespace Acrossai_Core_Abilities\Includes;
 
+use Acrossai_Core_Abilities\Includes\Abilities\Block;
 use Acrossai_Core_Abilities\Includes\Abilities\Cache;
 use Acrossai_Core_Abilities\Includes\Abilities\Database;
 use Acrossai_Core_Abilities\Includes\Abilities\FileManager;
@@ -236,6 +237,12 @@ final class Main {
 			'register'
 		);
 
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Block\Category_Registrar::instance(),
+			'register'
+		);
+
 		add_action(
 			'plugins_loaded',
 			static function (): void {
@@ -293,6 +300,11 @@ final class Main {
 				new FileManager\Wp_Config_Edit();
 				new FileManager\Debug_Log_Read();
 				new FileManager\Debug_Log_Clear();
+				new Block\Pattern_List();
+				new Block\Pattern_Read();
+				new Block\Pattern_Create();
+				new Block\Pattern_Update();
+				new Block\Pattern_Delete();
 			},
 			20
 		);
