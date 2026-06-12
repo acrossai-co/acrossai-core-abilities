@@ -24,7 +24,7 @@ jobs:
         run: echo "ref=${{ github.event.release.tag_name || inputs.tag }}" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ steps.tag.outputs.ref }}
 
@@ -57,7 +57,7 @@ jobs:
           echo "ZIP_PATH=${GITHUB_WORKSPACE}/${PLUGIN_SLUG}.zip" >> "$GITHUB_ENV"
 
       - name: Upload ZIP to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.tag.outputs.ref }}
           files: ${{ env.ZIP_PATH }}
