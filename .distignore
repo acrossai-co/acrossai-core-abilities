@@ -5,18 +5,44 @@
 
 /node_modules
 
-.gitattributes
-.distignore
-.gitignore
+# Dev tooling directories
+/.agents
+/.claude
+/.specify
+/.vscode
+/docs
+/scripts
+/specs
 
+# Dev/config dotfiles
+.aiignore
+.claudeignore
+.editorconfig
+.eslintrc
+.gitattributes
+.gitignore
+.gitmodules
+.distignore
+.mcp.json
+.nvmrc
+.prettierignore
+.wp-env.json
+
+# Build & dependency manifests (runtime deps shipped via composer install --no-dev)
 composer.json
 composer.lock
-
 package.json
 package-lock.json
-
-README.md
-
 webpack.config.js
+
+# Static analysis / linting configs
+phpcs.xml.dist
+phpstan.neon.dist
+
+# Dev-only docs (README.txt is the user-facing readme, LICENSE.txt is the canonical license)
+AGENTS.md
+LICENSE.md
+README.md
+ai-policy.yml
 
 .travis.yml
