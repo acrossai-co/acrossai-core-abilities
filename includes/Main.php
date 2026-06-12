@@ -3,7 +3,12 @@ namespace Acrossai_Core_Abilities\Includes;
 
 use Acrossai_Core_Abilities\Includes\Abilities\Cache;
 use Acrossai_Core_Abilities\Includes\Abilities\Database;
+use Acrossai_Core_Abilities\Includes\Abilities\FileManager;
 use Acrossai_Core_Abilities\Includes\Abilities\Plugins;
+use Acrossai_Core_Abilities\Includes\Abilities\Roles;
+use Acrossai_Core_Abilities\Includes\Abilities\Sessions;
+use Acrossai_Core_Abilities\Includes\Abilities\Themes;
+use Acrossai_Core_Abilities\Includes\Abilities\Users;
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
@@ -191,6 +196,18 @@ final class Main {
 
 		$this->loader->add_action(
 			'wp_abilities_api_categories_init',
+			Themes\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			FileManager\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
 			Cache\Category_Registrar::instance(),
 			'register'
 		);
@@ -198,6 +215,24 @@ final class Main {
 		$this->loader->add_action(
 			'wp_abilities_api_categories_init',
 			Database\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Users\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Roles\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Sessions\Category_Registrar::instance(),
 			'register'
 		);
 
@@ -212,6 +247,24 @@ final class Main {
 				new Plugins\Plugin_Install();
 				new Plugins\Plugin_List();
 				new Plugins\Update_Check();
+				new Themes\Theme_Activate();
+				new Themes\Theme_Delete();
+				new Themes\Theme_Install();
+				new Themes\Theme_List();
+				new Users\User_Get();
+				new Users\User_List();
+				new Users\User_Meta_Get();
+				new Users\User_Create();
+				new Users\User_Update();
+				new Users\User_Delete();
+				new Users\User_Meta_Update();
+				new Users\User_Password_Reset();
+				new Roles\Role_Assign();
+				new Roles\Role_Remove();
+				new Roles\Role_List();
+				new Roles\Role_Capabilities_Get();
+				new Sessions\Session_Force_Logout();
+				new Sessions\Session_List_Active();
 				new Cache\Cache_Flush();
 				new Cache\Cache_Transient_Flush();
 				new Cache\Cache_Rewrite_Flush();
@@ -224,6 +277,22 @@ final class Main {
 				new Database\Db_Explain();
 				new Database\Db_Stats();
 				new Database\Db_Optimize();
+				new FileManager\File_Read();
+				new FileManager\File_Create();
+				new FileManager\File_Edit();
+				new FileManager\File_Delete();
+				new FileManager\Plugin_Structure_Read();
+				new FileManager\Plugin_Code_Read();
+				new FileManager\Plugin_Files_Manage();
+				new FileManager\Theme_Structure_Read();
+				new FileManager\Theme_Code_Read();
+				new FileManager\Theme_Files_Edit();
+				new FileManager\Theme_Json_Read();
+				new FileManager\Theme_Json_Update();
+				new FileManager\Wp_Config_Read();
+				new FileManager\Wp_Config_Edit();
+				new FileManager\Debug_Log_Read();
+				new FileManager\Debug_Log_Clear();
 			},
 			20
 		);
