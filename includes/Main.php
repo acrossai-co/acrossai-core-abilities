@@ -6,7 +6,6 @@ use Acrossai_Core_Abilities\Includes\Abilities\Cache;
 use Acrossai_Core_Abilities\Includes\Abilities\Database;
 use Acrossai_Core_Abilities\Includes\Abilities\FileManager;
 use Acrossai_Core_Abilities\Includes\Abilities\Plugins;
-use Acrossai_Core_Abilities\Includes\Abilities\Roles;
 use Acrossai_Core_Abilities\Includes\Abilities\Sessions;
 use Acrossai_Core_Abilities\Includes\Abilities\Themes;
 use Acrossai_Core_Abilities\Includes\Abilities\Users;
@@ -227,12 +226,6 @@ final class Main {
 
 		$this->loader->add_action(
 			'wp_abilities_api_categories_init',
-			Roles\Category_Registrar::instance(),
-			'register'
-		);
-
-		$this->loader->add_action(
-			'wp_abilities_api_categories_init',
 			Sessions\Category_Registrar::instance(),
 			'register'
 		);
@@ -264,10 +257,8 @@ final class Main {
 				new Users\User_Update();
 				new Users\User_Delete();
 				new Users\User_Password_Reset();
-				new Roles\Role_Assign();
-				new Roles\Role_Remove();
-				new Roles\Role_List();
-				new Roles\Role_Capabilities_Get();
+				new Users\Roles_List();
+				new Users\Role_Capabilities();
 				new Sessions\Session_Force_Logout();
 				new Sessions\Session_List_Active();
 				new Cache\Cache_Flush();

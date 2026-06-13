@@ -1,19 +1,25 @@
 <?php
-namespace Acrossai_Core_Abilities\Includes\Abilities\Roles;
+namespace Acrossai_Core_Abilities\Includes\Abilities\Users;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
 
 defined( 'ABSPATH' ) || exit;
 
-class Role_List extends Ability_Definition {
+/**
+ * Lists every registered WordPress role.
+ *
+ * Replaces the dropped acrossai-core-abilities-roles category — role
+ * management is part of user administration here.
+ */
+class Roles_List extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'acrossai-core-abilities/role-list',
+			'name' => 'acrossai-core-abilities/user-roles-list',
 			'args' => array(
-				'label'               => __( 'List All Roles', 'acrossai-core-abilities' ),
-				'description'         => __( 'List all registered WordPress roles, optionally with their capability maps.', 'acrossai-core-abilities' ),
-				'category'            => 'acrossai-core-abilities-roles',
+				'label'               => __( 'List User Roles', 'acrossai-core-abilities' ),
+				'description'         => __( 'List all registered WordPress roles, optionally with their capability maps. Use these slugs as input to user-create / user-update.', 'acrossai-core-abilities' ),
+				'category'            => 'acrossai-core-abilities-users',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'list_users' );

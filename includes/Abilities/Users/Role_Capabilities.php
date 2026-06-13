@@ -1,19 +1,24 @@
 <?php
-namespace Acrossai_Core_Abilities\Includes\Abilities\Roles;
+namespace Acrossai_Core_Abilities\Includes\Abilities\Users;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
 
 defined( 'ABSPATH' ) || exit;
 
-class Role_Capabilities_Get extends Ability_Definition {
+/**
+ * Returns the capability map for a single role.
+ *
+ * Replaces the dropped acrossai-core-abilities-roles category.
+ */
+class Role_Capabilities extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'acrossai-core-abilities/role-capabilities-get',
+			'name' => 'acrossai-core-abilities/user-role-capabilities',
 			'args' => array(
 				'label'               => __( 'Get Role Capabilities', 'acrossai-core-abilities' ),
-				'description'         => __( 'Get the full capability map for a single role.', 'acrossai-core-abilities' ),
-				'category'            => 'acrossai-core-abilities-roles',
+				'description'         => __( 'Return the full capability map for a single registered role. Useful before granting a role via user-create / user-update.', 'acrossai-core-abilities' ),
+				'category'            => 'acrossai-core-abilities-users',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'list_users' );

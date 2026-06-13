@@ -17,7 +17,7 @@ class User_Update extends Ability_Definition {
 			'name' => 'acrossai-core-abilities/user-update',
 			'args' => array(
 				'label'               => __( 'Update User', 'acrossai-core-abilities' ),
-				'description'         => __( 'Update an existing WordPress user. Only provided fields are changed. Pass "meta" to set user_meta values (JSON strings auto-decoded), and "delete_meta_keys" to remove keys — both run in the same call.', 'acrossai-core-abilities' ),
+				'description'         => __( 'Update an existing WordPress user. Only provided fields are changed. Pass "meta" to set user_meta values (JSON strings auto-decoded) and "delete_meta_keys" to remove keys. Pass "add_roles" / "remove_roles" to mutate role membership, or "set_roles" to replace all current roles with the given list — set_roles takes precedence over add/remove.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-users',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
@@ -45,6 +45,21 @@ class User_Update extends Ability_Definition {
 							'items'       => array( 'type' => 'string' ),
 							'description' => __( 'user_meta keys to remove.', 'acrossai-core-abilities' ),
 						),
+						'add_roles'        => array(
+							'type'        => 'array',
+							'items'       => array( 'type' => 'string' ),
+							'description' => __( 'Role slugs to add to the user.', 'acrossai-core-abilities' ),
+						),
+						'remove_roles'     => array(
+							'type'        => 'array',
+							'items'       => array( 'type' => 'string' ),
+							'description' => __( 'Role slugs to remove from the user.', 'acrossai-core-abilities' ),
+						),
+						'set_roles'        => array(
+							'type'        => 'array',
+							'items'       => array( 'type' => 'string' ),
+							'description' => __( 'Replace all current roles with this list. Takes precedence over add_roles / remove_roles.', 'acrossai-core-abilities' ),
+						),
 					),
 					'required'             => array( 'user' ),
 					'additionalProperties' => false,
@@ -52,13 +67,16 @@ class User_Update extends Ability_Definition {
 				'output_schema'       => array(
 					'type'       => 'object',
 					'properties' => array(
-						'success'      => array( 'type' => 'boolean' ),
-						'message'      => array( 'type' => 'string' ),
-						'user_id'      => array( 'type' => 'integer' ),
-						'user'         => array( 'type' => 'object' ),
-						'meta_updated' => array( 'type' => 'array' ),
-						'meta_failed'  => array( 'type' => 'array' ),
-						'meta_deleted' => array( 'type' => 'array' ),
+						'success'       => array( 'type' => 'boolean' ),
+						'message'       => array( 'type' => 'string' ),
+						'user_id'       => array( 'type' => 'integer' ),
+						'user'          => array( 'type' => 'object' ),
+						'meta_updated'  => array( 'type' => 'array' ),
+						'meta_failed'   => array( 'type' => 'array' ),
+						'meta_deleted'  => array( 'type' => 'array' ),
+						'roles_added'   => array( 'type' => 'array' ),
+						'roles_removed' => array( 'type' => 'array' ),
+						'roles_failed'  => array( 'type' => 'array' ),
 					),
 				),
 				'meta'                => array(
@@ -159,17 +177,93 @@ class User_Update extends Ability_Definition {
 			$meta_failed   = array_merge( $meta_failed, $delete_result['failed'] );
 		}
 
+		$role_changes = $this->apply_role_changes( $user, $input );
+
 		$updated_user = get_user_by( 'id', $user_id );
 
 		return array(
-			'success'      => true,
+			'success'       => true,
 			/* translators: %s: user login */
-			'message'      => sprintf( __( 'User "%s" updated successfully.', 'acrossai-core-abilities' ), $user->user_login ),
-			'user_id'      => $user_id,
-			'user'         => $updated_user ? User_Helpers::format_user( $updated_user ) : array(),
-			'meta_updated' => $meta_updated,
-			'meta_failed'  => $meta_failed,
-			'meta_deleted' => $meta_deleted,
+			'message'       => sprintf( __( 'User "%s" updated successfully.', 'acrossai-core-abilities' ), $user->user_login ),
+			'user_id'       => $user_id,
+			'user'          => $updated_user ? User_Helpers::format_user( $updated_user ) : array(),
+			'meta_updated'  => $meta_updated,
+			'meta_failed'   => $meta_failed,
+			'meta_deleted'  => $meta_deleted,
+			'roles_added'   => $role_changes['added'],
+			'roles_removed' => $role_changes['removed'],
+			'roles_failed'  => $role_changes['failed'],
 		);
+	}
+
+	/**
+	 * Apply set_roles (preferred) or add_roles + remove_roles to a user.
+	 * Unknown role slugs are returned in the "failed" bucket and skipped.
+	 *
+	 * @return array{added: string[], removed: string[], failed: string[]}
+	 */
+	private function apply_role_changes( \WP_User $user, array $input ): array {
+		$added   = array();
+		$removed = array();
+		$failed  = array();
+
+		$sanitize_role_list = static function ( $value ): array {
+			if ( ! is_array( $value ) ) {
+				return array();
+			}
+			return array_values( array_filter( array_map( 'sanitize_key', $value ) ) );
+		};
+
+		if ( isset( $input['set_roles'] ) ) {
+			$desired = $sanitize_role_list( $input['set_roles'] );
+			if ( empty( $desired ) ) {
+				return array( 'added' => $added, 'removed' => $removed, 'failed' => $failed );
+			}
+
+			// Validate every slug exists before mutating; refuse the whole op otherwise.
+			foreach ( $desired as $slug ) {
+				if ( null === get_role( $slug ) ) {
+					$failed[] = $slug;
+				}
+			}
+			if ( ! empty( $failed ) ) {
+				return array( 'added' => $added, 'removed' => $removed, 'failed' => $failed );
+			}
+
+			$current = (array) $user->roles;
+			foreach ( $current as $existing ) {
+				$user->remove_role( $existing );
+				$removed[] = $existing;
+			}
+			foreach ( $desired as $slug ) {
+				$user->add_role( $slug );
+				$added[] = $slug;
+			}
+			return array( 'added' => $added, 'removed' => $removed, 'failed' => $failed );
+		}
+
+		if ( ! empty( $input['add_roles'] ) ) {
+			foreach ( $sanitize_role_list( $input['add_roles'] ) as $slug ) {
+				if ( null === get_role( $slug ) ) {
+					$failed[] = $slug;
+					continue;
+				}
+				if ( ! in_array( $slug, (array) $user->roles, true ) ) {
+					$user->add_role( $slug );
+					$added[] = $slug;
+				}
+			}
+		}
+
+		if ( ! empty( $input['remove_roles'] ) ) {
+			foreach ( $sanitize_role_list( $input['remove_roles'] ) as $slug ) {
+				if ( in_array( $slug, (array) $user->roles, true ) ) {
+					$user->remove_role( $slug );
+					$removed[] = $slug;
+				}
+			}
+		}
+
+		return array( 'added' => $added, 'removed' => $removed, 'failed' => $failed );
 	}
 }
