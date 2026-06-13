@@ -305,6 +305,8 @@ final class Main {
 				new Block\Pattern_Create();
 				new Block\Pattern_Update();
 				new Block\Pattern_Delete();
+				new Block\Templates_List_Read();
+				new Block\Template_Parts_Read();
 			},
 			20
 		);
