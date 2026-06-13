@@ -56,11 +56,15 @@ class User_Helpers {
 	/**
 	 * Format a WP_User as an array of safe public fields.
 	 *
+	 * Pass $opts['include_meta'] = true to attach a "meta" map of unserialized
+	 * user_meta values. Optionally restrict to specific $opts['meta_keys'].
+	 *
 	 * @param \WP_User $user
+	 * @param array{include_meta?: bool, meta_keys?: array<int, string>} $opts
 	 * @return array
 	 */
-	public static function format_user( \WP_User $user ): array {
-		return array(
+	public static function format_user( \WP_User $user, array $opts = array() ): array {
+		$data = array(
 			'id'           => (int) $user->ID,
 			'login'        => $user->user_login,
 			'email'        => $user->user_email,
@@ -72,6 +76,104 @@ class User_Helpers {
 			'registered'   => $user->user_registered,
 			'roles'        => array_values( (array) $user->roles ),
 		);
+
+		if ( ! empty( $opts['include_meta'] ) ) {
+			$keys         = isset( $opts['meta_keys'] ) && is_array( $opts['meta_keys'] ) ? $opts['meta_keys'] : array();
+			$data['meta'] = self::get_all_meta( (int) $user->ID, $keys );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Returns a flat map of user_meta values, automatically unserialized.
+	 * If $keys is non-empty, only those keys are returned (single value each).
+	 *
+	 * @param int        $user_id
+	 * @param string[]   $keys
+	 * @return array<string, mixed>
+	 */
+	public static function get_all_meta( int $user_id, array $keys = array() ): array {
+		if ( ! empty( $keys ) ) {
+			$out = array();
+			foreach ( $keys as $key ) {
+				$key = sanitize_text_field( (string) $key );
+				if ( '' === $key ) {
+					continue;
+				}
+				$out[ $key ] = get_user_meta( $user_id, $key, true );
+			}
+			return $out;
+		}
+
+		$all  = get_user_meta( $user_id );
+		$flat = array();
+		if ( ! is_array( $all ) ) {
+			return $flat;
+		}
+		foreach ( $all as $key => $values ) {
+			if ( '' === $key ) {
+				continue;
+			}
+			$values = (array) $values;
+			if ( 1 === count( $values ) ) {
+				$flat[ $key ] = maybe_unserialize( $values[0] );
+			} else {
+				$flat[ $key ] = array_map( 'maybe_unserialize', $values );
+			}
+		}
+		return $flat;
+	}
+
+	/**
+	 * Bulk-apply a "meta" map ($key => $value) using update_user_meta.
+	 * String values that look like JSON are decoded.
+	 *
+	 * @param int                  $user_id
+	 * @param array<string, mixed> $meta
+	 * @return array{updated: string[], failed: string[]}
+	 */
+	public static function apply_meta( int $user_id, array $meta ): array {
+		$updated = array();
+		$failed  = array();
+		foreach ( $meta as $key => $value ) {
+			$key = sanitize_text_field( (string) $key );
+			if ( '' === $key ) {
+				continue;
+			}
+			$value  = self::maybe_decode_json( $value );
+			$result = update_user_meta( $user_id, $key, $value );
+			if ( false === $result ) {
+				$failed[] = $key;
+			} else {
+				$updated[] = $key;
+			}
+		}
+		return array( 'updated' => $updated, 'failed' => $failed );
+	}
+
+	/**
+	 * Bulk-delete user_meta by key list.
+	 *
+	 * @param int      $user_id
+	 * @param string[] $keys
+	 * @return array{deleted: string[], failed: string[]}
+	 */
+	public static function delete_meta( int $user_id, array $keys ): array {
+		$deleted = array();
+		$failed  = array();
+		foreach ( $keys as $key ) {
+			$key = sanitize_text_field( (string) $key );
+			if ( '' === $key ) {
+				continue;
+			}
+			if ( delete_user_meta( $user_id, $key ) ) {
+				$deleted[] = $key;
+			} else {
+				$failed[] = $key;
+			}
+		}
+		return array( 'deleted' => $deleted, 'failed' => $failed );
 	}
 
 	/**

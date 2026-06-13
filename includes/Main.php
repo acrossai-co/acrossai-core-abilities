@@ -260,11 +260,9 @@ final class Main {
 				new Themes\Theme_List();
 				new Users\User_Get();
 				new Users\User_List();
-				new Users\User_Meta_Get();
 				new Users\User_Create();
 				new Users\User_Update();
 				new Users\User_Delete();
-				new Users\User_Meta_Update();
 				new Users\User_Password_Reset();
 				new Roles\Role_Assign();
 				new Roles\Role_Remove();

@@ -6,6 +6,10 @@ use Acrossai_Core_Abilities\Includes\Utilities\User_Helpers;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Update an existing user. Optionally set or delete user_meta in the same
+ * call (replacing the dropped user-meta-update ability).
+ */
 class User_Update extends Ability_Definition {
 
 	protected function ability(): array {
@@ -13,7 +17,7 @@ class User_Update extends Ability_Definition {
 			'name' => 'acrossai-core-abilities/user-update',
 			'args' => array(
 				'label'               => __( 'Update User', 'acrossai-core-abilities' ),
-				'description'         => __( 'Update an existing WordPress user. Only provided fields are changed.', 'acrossai-core-abilities' ),
+				'description'         => __( 'Update an existing WordPress user. Only provided fields are changed. Pass "meta" to set user_meta values (JSON strings auto-decoded), and "delete_meta_keys" to remove keys — both run in the same call.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-users',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
@@ -22,33 +26,24 @@ class User_Update extends Ability_Definition {
 				'input_schema'        => array(
 					'type'                 => 'object',
 					'properties'           => array(
-						'user'         => array(
+						'user'             => array(
 							'type'        => array( 'string', 'integer' ),
 							'description' => __( 'User ID, login, email, or slug.', 'acrossai-core-abilities' ),
 						),
-						'email'        => array(
-							'type'        => 'string',
-							'description' => __( 'New email address.', 'acrossai-core-abilities' ),
+						'email'            => array( 'type' => 'string' ),
+						'first_name'       => array( 'type' => 'string' ),
+						'last_name'        => array( 'type' => 'string' ),
+						'display_name'     => array( 'type' => 'string' ),
+						'url'              => array( 'type' => 'string' ),
+						'password'         => array( 'type' => 'string' ),
+						'meta'             => array(
+							'type'        => 'object',
+							'description' => __( 'Map of user_meta key => value to set. String values that look like JSON are auto-decoded into arrays/objects.', 'acrossai-core-abilities' ),
 						),
-						'first_name'   => array(
-							'type'        => 'string',
-							'description' => __( 'First name.', 'acrossai-core-abilities' ),
-						),
-						'last_name'    => array(
-							'type'        => 'string',
-							'description' => __( 'Last name.', 'acrossai-core-abilities' ),
-						),
-						'display_name' => array(
-							'type'        => 'string',
-							'description' => __( 'Display name.', 'acrossai-core-abilities' ),
-						),
-						'url'          => array(
-							'type'        => 'string',
-							'description' => __( 'User website URL.', 'acrossai-core-abilities' ),
-						),
-						'password'     => array(
-							'type'        => 'string',
-							'description' => __( 'New password.', 'acrossai-core-abilities' ),
+						'delete_meta_keys' => array(
+							'type'        => 'array',
+							'items'       => array( 'type' => 'string' ),
+							'description' => __( 'user_meta keys to remove.', 'acrossai-core-abilities' ),
 						),
 					),
 					'required'             => array( 'user' ),
@@ -57,10 +52,13 @@ class User_Update extends Ability_Definition {
 				'output_schema'       => array(
 					'type'       => 'object',
 					'properties' => array(
-						'success' => array( 'type' => 'boolean' ),
-						'message' => array( 'type' => 'string' ),
-						'user_id' => array( 'type' => 'integer' ),
-						'user'    => array( 'type' => 'object' ),
+						'success'      => array( 'type' => 'boolean' ),
+						'message'      => array( 'type' => 'string' ),
+						'user_id'      => array( 'type' => 'integer' ),
+						'user'         => array( 'type' => 'object' ),
+						'meta_updated' => array( 'type' => 'array' ),
+						'meta_failed'  => array( 'type' => 'array' ),
+						'meta_deleted' => array( 'type' => 'array' ),
 					),
 				),
 				'meta'                => array(
@@ -88,7 +86,6 @@ class User_Update extends Ability_Definition {
 		}
 
 		$user = User_Helpers::resolve_user( $input['user'] );
-
 		if ( null === $user ) {
 			return array(
 				'success' => false,
@@ -97,7 +94,8 @@ class User_Update extends Ability_Definition {
 			);
 		}
 
-		$update = array( 'ID' => $user->ID );
+		$update    = array( 'ID' => $user->ID );
+		$has_field = false;
 
 		if ( array_key_exists( 'email', $input ) ) {
 			$email = sanitize_email( (string) $input['email'] );
@@ -108,42 +106,70 @@ class User_Update extends Ability_Definition {
 				);
 			}
 			$update['user_email'] = $email;
+			$has_field            = true;
 		}
-
 		if ( array_key_exists( 'first_name', $input ) ) {
 			$update['first_name'] = sanitize_text_field( (string) $input['first_name'] );
+			$has_field            = true;
 		}
 		if ( array_key_exists( 'last_name', $input ) ) {
 			$update['last_name'] = sanitize_text_field( (string) $input['last_name'] );
+			$has_field           = true;
 		}
 		if ( array_key_exists( 'display_name', $input ) ) {
 			$update['display_name'] = sanitize_text_field( (string) $input['display_name'] );
+			$has_field              = true;
 		}
 		if ( array_key_exists( 'url', $input ) ) {
 			$update['user_url'] = esc_url_raw( (string) $input['url'] );
+			$has_field          = true;
 		}
 		if ( ! empty( $input['password'] ) ) {
 			$update['user_pass'] = (string) $input['password'];
+			$has_field           = true;
 		}
 
-		$result = wp_update_user( $update );
+		// Apply core-field update only if at least one field was supplied.
+		if ( $has_field ) {
+			$result = wp_update_user( $update );
 
-		if ( is_wp_error( $result ) ) {
-			return array(
-				'success' => false,
-				/* translators: %s: error message */
-				'message' => sprintf( __( 'Failed to update user: %s', 'acrossai-core-abilities' ), $result->get_error_message() ),
-			);
+			if ( is_wp_error( $result ) ) {
+				return array(
+					'success' => false,
+					/* translators: %s: error message */
+					'message' => sprintf( __( 'Failed to update user: %s', 'acrossai-core-abilities' ), $result->get_error_message() ),
+				);
+			}
 		}
 
-		$updated = get_user_by( 'id', (int) $result );
+		$user_id = (int) $user->ID;
+
+		$meta_updated = array();
+		$meta_failed  = array();
+		if ( ! empty( $input['meta'] ) && ( is_array( $input['meta'] ) || is_object( $input['meta'] ) ) ) {
+			$meta_result  = User_Helpers::apply_meta( $user_id, (array) $input['meta'] );
+			$meta_updated = $meta_result['updated'];
+			$meta_failed  = $meta_result['failed'];
+		}
+
+		$meta_deleted = array();
+		if ( ! empty( $input['delete_meta_keys'] ) && is_array( $input['delete_meta_keys'] ) ) {
+			$delete_result = User_Helpers::delete_meta( $user_id, $input['delete_meta_keys'] );
+			$meta_deleted  = $delete_result['deleted'];
+			$meta_failed   = array_merge( $meta_failed, $delete_result['failed'] );
+		}
+
+		$updated_user = get_user_by( 'id', $user_id );
 
 		return array(
-			'success' => true,
+			'success'      => true,
 			/* translators: %s: user login */
-			'message' => sprintf( __( 'User "%s" updated successfully.', 'acrossai-core-abilities' ), $user->user_login ),
-			'user_id' => (int) $result,
-			'user'    => $updated ? User_Helpers::format_user( $updated ) : array(),
+			'message'      => sprintf( __( 'User "%s" updated successfully.', 'acrossai-core-abilities' ), $user->user_login ),
+			'user_id'      => $user_id,
+			'user'         => $updated_user ? User_Helpers::format_user( $updated_user ) : array(),
+			'meta_updated' => $meta_updated,
+			'meta_failed'  => $meta_failed,
+			'meta_deleted' => $meta_deleted,
 		);
 	}
 }
