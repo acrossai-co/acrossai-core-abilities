@@ -4,7 +4,11 @@ namespace Acrossai_Core_Abilities\Includes\Abilities\Block;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Shared helpers for theme block-pattern abilities.
+ * File-based block-pattern utilities shared by every Block ability:
+ *  - theme + plugin /patterns directory resolution
+ *  - filename normalisation + path-traversal guards
+ *  - PHP doc-block header parse / build
+ *  - slug + content validation
  *
  * Spec: https://developer.wordpress.org/themes/patterns/introduction-to-patterns/
  */
@@ -29,10 +33,13 @@ final class Pattern_Helper {
 		'Template Types',
 	);
 
+	// -------------------------------------------------------------------------
+	// Theme directory resolution
+	// -------------------------------------------------------------------------
+
 	/**
 	 * Resolves and validates a theme directory.
 	 *
-	 * @param string $slug Theme folder slug. Empty means active theme.
 	 * @return string|\WP_Error Absolute theme directory path, or WP_Error on failure.
 	 */
 	public static function resolve_theme_dir( string $slug ) {
@@ -49,27 +56,121 @@ final class Pattern_Helper {
 	}
 
 	/**
-	 * Resolves the absolute path to a pattern file inside a theme's /patterns dir.
+	 * Returns the active child theme's absolute path, or null when the active
+	 * theme is not a child theme (parent and child stylesheet are the same).
+	 */
+	public static function get_child_theme_dir(): ?string {
+		if ( get_template() === get_stylesheet() ) {
+			return null;
+		}
+		$path = realpath( get_stylesheet_directory() );
+		return $path ? $path : null;
+	}
+
+	public static function get_parent_theme_dir(): string {
+		return rtrim( get_template_directory(), '/' );
+	}
+
+	// -------------------------------------------------------------------------
+	// Plugin directory resolution
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Returns the absolute /patterns directory for a plugin by its slug
+	 * (the folder name under WP_PLUGIN_DIR). Null if not a real plugin.
 	 *
-	 * @param string $theme_dir Absolute theme directory.
-	 * @param string $filename  Pattern filename (e.g. "hero.php").
+	 * @return array{path: string, active: bool, plugin_file: string}|\WP_Error
+	 */
+	public static function resolve_plugin_dir( string $slug ) {
+		$slug = sanitize_key( $slug );
+		if ( '' === $slug ) {
+			return new \WP_Error( 'invalid_plugin_slug', __( 'Plugin slug is required.', 'acrossai-core-abilities' ) );
+		}
+
+		$plugins_dir = rtrim( WP_PLUGIN_DIR, '/' );
+		$plugin_dir  = realpath( $plugins_dir . '/' . $slug );
+
+		if ( false === $plugin_dir || 0 !== strpos( $plugin_dir, $plugins_dir ) || ! is_dir( $plugin_dir ) ) {
+			return new \WP_Error( 'plugin_not_found', __( 'Plugin directory not found.', 'acrossai-core-abilities' ) );
+		}
+
+		// Find this plugin's main bootstrap file so we can probe activation status.
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$plugin_file = '';
+		$active      = false;
+		foreach ( array_keys( get_plugins() ) as $rel ) {
+			if ( 0 === strpos( $rel, $slug . '/' ) ) {
+				$plugin_file = $rel;
+				$active      = is_plugin_active( $rel );
+				break;
+			}
+		}
+
+		return array(
+			'path'        => $plugin_dir,
+			'active'      => $active,
+			'plugin_file' => $plugin_file,
+		);
+	}
+
+	/**
+	 * Returns every plugin slug that has a /patterns directory.
+	 *
+	 * @return array<int, array{slug:string, path:string, active:bool}>
+	 */
+	public static function scan_plugins_with_patterns(): array {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$found = array();
+		foreach ( array_keys( get_plugins() ) as $rel ) {
+			$parts = explode( '/', $rel );
+			$slug  = $parts[0] ?? '';
+			if ( '' === $slug || isset( $seen[ $slug ] ) ) {
+				continue;
+			}
+			$seen[ $slug ] = true;
+
+			$patterns_dir = WP_PLUGIN_DIR . '/' . $slug . '/patterns';
+			if ( ! is_dir( $patterns_dir ) ) {
+				continue;
+			}
+			$found[] = array(
+				'slug'   => $slug,
+				'path'   => $patterns_dir,
+				'active' => is_plugin_active( $rel ),
+			);
+		}
+		return $found;
+	}
+
+	// -------------------------------------------------------------------------
+	// Pattern file path within /patterns
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Resolves the absolute path to a pattern file inside the given
+	 * container directory's /patterns dir, refusing path escapes.
+	 *
 	 * @return string|\WP_Error
 	 */
-	public static function resolve_pattern_path( string $theme_dir, string $filename ) {
-		$filename = self::sanitize_filename( $filename );
+	public static function resolve_pattern_path( string $container_dir, string $filename_or_slug ) {
+		$filename = self::sanitize_filename( $filename_or_slug );
 		if ( '' === $filename ) {
 			return new \WP_Error( 'invalid_filename', __( 'Invalid pattern filename.', 'acrossai-core-abilities' ) );
 		}
 
-		$patterns_dir = $theme_dir . '/patterns';
+		$patterns_dir = $container_dir . '/patterns';
 		$abs_path     = $patterns_dir . '/' . $filename;
 
-		// Validate the resolved path stays inside the patterns dir, even before the file exists.
 		$resolved_dir = realpath( $patterns_dir );
 		if ( false !== $resolved_dir ) {
 			$candidate = realpath( $abs_path );
 			if ( false !== $candidate && 0 !== strpos( $candidate, $resolved_dir ) ) {
-				return new \WP_Error( 'path_escape', __( 'Pattern path escapes the theme /patterns directory.', 'acrossai-core-abilities' ) );
+				return new \WP_Error( 'path_escape', __( 'Pattern path escapes the /patterns directory.', 'acrossai-core-abilities' ) );
 			}
 		}
 
@@ -77,14 +178,14 @@ final class Pattern_Helper {
 	}
 
 	/**
-	 * Normalises a pattern filename to a safe `slug.php` form.
+	 * Normalises a value (filename OR bare slug) to a safe `slug.php` form.
 	 */
-	public static function sanitize_filename( string $filename ): string {
-		$filename = basename( $filename );
-		if ( ! preg_match( '/\.php$/i', $filename ) ) {
-			$filename .= '.php';
+	public static function sanitize_filename( string $value ): string {
+		$value = basename( $value );
+		if ( ! preg_match( '/\.php$/i', $value ) ) {
+			$value .= '.php';
 		}
-		$base = preg_replace( '/\.php$/i', '', $filename );
+		$base = preg_replace( '/\.php$/i', '', $value );
 		$base = sanitize_title( $base );
 		if ( '' === $base ) {
 			return '';
@@ -92,24 +193,59 @@ final class Pattern_Helper {
 		return $base . '.php';
 	}
 
+	// -------------------------------------------------------------------------
+	// Slug validation
+	// -------------------------------------------------------------------------
+
 	/**
-	 * Validates a fully-qualified pattern slug of the form `theme-slug/pattern-slug`.
+	 * Validates a bare pattern slug (the part after "/").
+	 * Used for DB post_name and file basename.
 	 */
-	public static function is_valid_slug( string $slug ): bool {
+	public static function is_valid_bare_slug( string $slug ): bool {
+		return (bool) preg_match( '#^[a-z0-9_-]+$#', $slug );
+	}
+
+	/**
+	 * Validates a fully-qualified slug of the form "prefix/pattern-name".
+	 * Used for the file header "Slug:" field.
+	 */
+	public static function is_valid_full_slug( string $slug ): bool {
 		return (bool) preg_match( '#^[a-z0-9_-]+/[a-z0-9_-]+$#', $slug );
 	}
+
+	/**
+	 * Builds the canonical full slug for a file-based pattern given the
+	 * container slug (theme folder or plugin folder) and the bare slug.
+	 */
+	public static function build_full_slug( string $container_slug, string $bare_slug ): string {
+		return sanitize_key( $container_slug ) . '/' . sanitize_key( $bare_slug );
+	}
+
+	// -------------------------------------------------------------------------
+	// Content validation
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Empty or whitespace-only content is rejected per Scenario 15.
+	 */
+	public static function is_valid_content( string $content ): bool {
+		return '' !== trim( $content );
+	}
+
+	// -------------------------------------------------------------------------
+	// File header parse / build
+	// -------------------------------------------------------------------------
 
 	/**
 	 * Builds the PHP header comment block for a new pattern file.
 	 *
 	 * @param array<string, string> $headers Header name => value.
-	 * @return string PHP source including opening tag and closing `?>`.
 	 */
 	public static function build_file( array $headers, string $body ): string {
 		$lines = array( '<?php', '/**' );
 		foreach ( self::HEADERS as $name ) {
 			if ( isset( $headers[ $name ] ) && '' !== $headers[ $name ] ) {
-				$lines[] = ' * ' . $name . ': ' . self::sanitize_header_value( $headers[ $name ] );
+				$lines[] = ' * ' . $name . ': ' . self::sanitize_header_value( (string) $headers[ $name ] );
 			}
 		}
 		$lines[] = ' */';
@@ -144,19 +280,31 @@ final class Pattern_Helper {
 		);
 	}
 
-	/**
-	 * Strips line breaks from a header value so it can't break the doc block.
-	 */
 	private static function sanitize_header_value( string $value ): string {
 		$value = (string) preg_replace( '/\s+/', ' ', $value );
 		return trim( $value );
 	}
 
 	/**
-	 * Returns the list of header field names a caller may set.
+	 * Maps the create/update input keys to header field names.
 	 *
-	 * @return string[]
+	 * @return array<string, string>
 	 */
+	public static function input_to_header_map(): array {
+		return array(
+			'title'          => 'Title',
+			'slug_full'      => 'Slug',
+			'description'    => 'Description',
+			'viewport_width' => 'Viewport Width',
+			'inserter'       => 'Inserter',
+			'categories'     => 'Categories',
+			'keywords'       => 'Keywords',
+			'block_types'    => 'Block Types',
+			'post_types'     => 'Post Types',
+			'template_types' => 'Template Types',
+		);
+	}
+
 	public static function header_fields(): array {
 		return self::HEADERS;
 	}

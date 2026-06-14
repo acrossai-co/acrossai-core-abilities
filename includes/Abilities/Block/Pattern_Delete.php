@@ -5,43 +5,47 @@ use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Deletes a block pattern from one storage location. Auto-detects the
+ * source; returns multiple_locations when ambiguous. For source=theme,
+ * prefers the child theme over the parent so callers don't accidentally
+ * mutate the parent — pass theme_type=parent explicitly to delete a
+ * parent-theme file.
+ */
 class Pattern_Delete extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
 			'name' => 'acrossai-core-abilities/block-pattern-delete',
 			'args' => array(
-				'label'               => __( 'Delete Theme Block Pattern', 'acrossai-core-abilities' ),
-				'description'         => __( 'Deletes a block-pattern PHP file from a theme\'s /patterns directory.', 'acrossai-core-abilities' ),
+				'label'               => __( 'Delete Block Pattern', 'acrossai-core-abilities' ),
+				'description'         => __( 'Deletes a pattern from one storage location: db, theme /patterns, or plugin /patterns. Auto-detects the source; returns error_code=multiple_locations on ambiguity. For theme deletions, the child theme is preferred unless theme_type=parent is set explicitly.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-block',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_themes' );
+					return current_user_can( 'edit_theme_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
 					'properties'           => array(
-						'theme_slug' => array(
-							'type'    => 'string',
-							'default' => '',
-						),
-						'filename'   => array(
-							'type'        => 'string',
-							'description' => __( 'Pattern filename to delete.', 'acrossai-core-abilities' ),
-						),
+						'slug'        => array( 'type' => 'string' ),
+						'source'      => array( 'type' => 'string', 'enum' => array( 'db', 'theme', 'plugin' ) ),
+						'theme_type'  => array( 'type' => 'string', 'enum' => array( 'child', 'parent', 'theme' ) ),
+						'plugin_slug' => array( 'type' => 'string' ),
 					),
-					'required'             => array( 'filename' ),
+					'required'             => array( 'slug' ),
 					'additionalProperties' => false,
 				),
 				'output_schema'       => array(
 					'type'       => 'object',
 					'properties' => array(
-						'success' => array( 'type' => 'boolean' ),
-						'path'    => array( 'type' => 'string' ),
-						'message' => array( 'type' => 'string' ),
+						'success'    => array( 'type' => 'boolean' ),
+						'message'    => array( 'type' => 'string' ),
+						'error_code' => array( 'type' => 'string' ),
+						'deleted'    => array( 'type' => 'object' ),
+						'locations'  => array( 'type' => 'array' ),
 					),
-					'required'   => array( 'success', 'message' ),
-					'additionalProperties' => false,
+					'required'   => array( 'success' ),
 				),
 				'meta'                => array(
 					'show_in_rest' => true,
@@ -60,30 +64,82 @@ class Pattern_Delete extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$theme_slug = sanitize_text_field( $input['theme_slug'] ?? '' );
-		$theme_dir  = Pattern_Helper::resolve_theme_dir( $theme_slug );
-
-		if ( is_wp_error( $theme_dir ) ) {
-			return array( 'success' => false, 'message' => $theme_dir->get_error_message() );
+		$slug = sanitize_title( (string) ( $input['slug'] ?? '' ) );
+		if ( '' === $slug ) {
+			return array( 'success' => false, 'message' => __( 'slug is required.', 'acrossai-core-abilities' ), 'error_code' => 'invalid_slug' );
 		}
 
-		$abs_path = Pattern_Helper::resolve_pattern_path( $theme_dir, sanitize_text_field( $input['filename'] ?? '' ) );
-		if ( is_wp_error( $abs_path ) ) {
-			return array( 'success' => false, 'message' => $abs_path->get_error_message() );
+		$source      = sanitize_text_field( $input['source'] ?? '' );
+		$theme_type  = sanitize_text_field( $input['theme_type'] ?? '' );
+		$plugin_slug = sanitize_key( $input['plugin_slug'] ?? '' );
+
+		$locations = Pattern_Detector::locate( $slug );
+
+		// Default theme deletions to child when both exist.
+		if ( '' === $theme_type && 'theme' === $source ) {
+			$child = array_values(
+				array_filter(
+					$locations,
+					static function ( $l ): bool {
+						return ( $l['source'] ?? '' ) === 'theme' && ( $l['theme_type'] ?? '' ) === 'child';
+					}
+				)
+			);
+			if ( ! empty( $child ) ) {
+				$theme_type = 'child';
+			}
 		}
 
-		if ( ! is_file( $abs_path ) ) {
-			return array( 'success' => false, 'message' => __( 'Pattern file not found.', 'acrossai-core-abilities' ) );
+		$selected = Pattern_Detector::select( $locations, $source, $theme_type, $plugin_slug );
+
+		if ( is_wp_error( $selected ) ) {
+			$code = $selected->get_error_code();
+			$data = $selected->get_error_data();
+			return array(
+				'success'    => false,
+				'message'    => $selected->get_error_message(),
+				'error_code' => $code,
+				'locations'  => $data['locations'] ?? $locations,
+			);
 		}
 
-		if ( ! unlink( $abs_path ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
-			return array( 'success' => false, 'message' => __( 'Could not delete pattern file.', 'acrossai-core-abilities' ) );
+		if ( 'db' === $selected['source'] ) {
+			$post = get_post( (int) $selected['post_id'] );
+			if ( ! $post || ! Pattern_Db::delete( $post ) ) {
+				return array( 'success' => false, 'message' => __( 'Could not delete pattern post.', 'acrossai-core-abilities' ), 'error_code' => 'delete_failed' );
+			}
+			return array(
+				'success' => true,
+				'message' => __( 'Pattern deleted from the database.', 'acrossai-core-abilities' ),
+				'deleted' => $selected,
+			);
 		}
+
+		// File-based
+		$path = (string) $selected['path'];
+		if ( ! is_writable( $path ) ) {
+			return array(
+				'success'    => false,
+				'message'    => sprintf(
+					/* translators: %s: file path */
+					__( 'Pattern file is not writable (%s).', 'acrossai-core-abilities' ),
+					$path
+				),
+				'error_code' => 'file_not_writable',
+			);
+		}
+		if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink, WordPress.PHP.NoSilencedErrors.Discouraged
+			return array( 'success' => false, 'message' => __( 'Could not delete pattern file.', 'acrossai-core-abilities' ), 'error_code' => 'delete_failed' );
+		}
+
+		$message = ( 'plugin' === $selected['source'] && empty( $selected['plugin_active'] ) )
+			? __( 'Pattern file deleted from inactive plugin.', 'acrossai-core-abilities' )
+			: __( 'Pattern file deleted.', 'acrossai-core-abilities' );
 
 		return array(
 			'success' => true,
-			'path'    => $abs_path,
-			'message' => __( 'Pattern deleted.', 'acrossai-core-abilities' ),
+			'message' => $message,
+			'deleted' => $selected,
 		);
 	}
 }
