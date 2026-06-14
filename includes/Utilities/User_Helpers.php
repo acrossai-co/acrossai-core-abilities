@@ -82,6 +82,10 @@ class User_Helpers {
 			$data['meta'] = self::get_all_meta( (int) $user->ID, $keys );
 		}
 
+		if ( ! empty( $opts['include_sessions'] ) ) {
+			$data['sessions'] = self::get_sessions( (int) $user->ID );
+		}
+
 		return $data;
 	}
 
@@ -174,6 +178,38 @@ class User_Helpers {
 			}
 		}
 		return array( 'deleted' => $deleted, 'failed' => $failed );
+	}
+
+	/**
+	 * Returns the active session tokens for a user as a flat array of
+	 * { login, expiration, ip, ua } rows. Each row reflects what
+	 * WP_Session_Tokens stores per session.
+	 *
+	 * @return array<int, array{login:int, expiration:int, ip:string, ua:string}>
+	 */
+	public static function get_sessions( int $user_id ): array {
+		$manager = \WP_Session_Tokens::get_instance( $user_id );
+		$out     = array();
+		foreach ( $manager->get_all() as $session ) {
+			$out[] = array(
+				'login'      => isset( $session['login'] ) ? (int) $session['login'] : 0,
+				'expiration' => isset( $session['expiration'] ) ? (int) $session['expiration'] : 0,
+				'ip'         => isset( $session['ip'] ) ? (string) $session['ip'] : '',
+				'ua'         => isset( $session['ua'] ) ? (string) $session['ua'] : '',
+			);
+		}
+		return $out;
+	}
+
+	/**
+	 * Destroys every active session for a user. Returns the count that was
+	 * killed (looked up before the destroy call).
+	 */
+	public static function destroy_sessions( int $user_id ): int {
+		$manager = \WP_Session_Tokens::get_instance( $user_id );
+		$count   = count( $manager->get_all() );
+		$manager->destroy_all();
+		return $count;
 	}
 
 	/**

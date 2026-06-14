@@ -17,7 +17,7 @@ class User_Update extends Ability_Definition {
 			'name' => 'acrossai-core-abilities/user-update',
 			'args' => array(
 				'label'               => __( 'Update User', 'acrossai-core-abilities' ),
-				'description'         => __( 'Update an existing WordPress user. Only provided fields are changed. Pass "meta" to set user_meta values (JSON strings auto-decoded) and "delete_meta_keys" to remove keys. Pass "add_roles" / "remove_roles" to mutate role membership, or "set_roles" to replace all current roles with the given list — set_roles takes precedence over add/remove.', 'acrossai-core-abilities' ),
+				'description'         => __( 'Update an existing WordPress user. Only provided fields are changed. Pass "meta" to set user_meta values (JSON strings auto-decoded) and "delete_meta_keys" to remove keys. Pass "add_roles" / "remove_roles" to mutate role membership, or "set_roles" to replace all current roles with the given list — set_roles takes precedence over add/remove. Pass "force_logout: true" to destroy every active login session after the update (useful when changing password or revoking access).', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-users',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
@@ -60,6 +60,11 @@ class User_Update extends Ability_Definition {
 							'items'       => array( 'type' => 'string' ),
 							'description' => __( 'Replace all current roles with this list. Takes precedence over add_roles / remove_roles.', 'acrossai-core-abilities' ),
 						),
+						'force_logout'     => array(
+							'type'        => 'boolean',
+							'default'     => false,
+							'description' => __( 'Destroy every active login session for this user after the update completes.', 'acrossai-core-abilities' ),
+						),
 					),
 					'required'             => array( 'user' ),
 					'additionalProperties' => false,
@@ -67,16 +72,17 @@ class User_Update extends Ability_Definition {
 				'output_schema'       => array(
 					'type'       => 'object',
 					'properties' => array(
-						'success'       => array( 'type' => 'boolean' ),
-						'message'       => array( 'type' => 'string' ),
-						'user_id'       => array( 'type' => 'integer' ),
-						'user'          => array( 'type' => 'object' ),
-						'meta_updated'  => array( 'type' => 'array' ),
-						'meta_failed'   => array( 'type' => 'array' ),
-						'meta_deleted'  => array( 'type' => 'array' ),
-						'roles_added'   => array( 'type' => 'array' ),
-						'roles_removed' => array( 'type' => 'array' ),
-						'roles_failed'  => array( 'type' => 'array' ),
+						'success'            => array( 'type' => 'boolean' ),
+						'message'            => array( 'type' => 'string' ),
+						'user_id'            => array( 'type' => 'integer' ),
+						'user'               => array( 'type' => 'object' ),
+						'meta_updated'       => array( 'type' => 'array' ),
+						'meta_failed'        => array( 'type' => 'array' ),
+						'meta_deleted'       => array( 'type' => 'array' ),
+						'roles_added'        => array( 'type' => 'array' ),
+						'roles_removed'      => array( 'type' => 'array' ),
+						'roles_failed'       => array( 'type' => 'array' ),
+						'sessions_destroyed' => array( 'type' => 'integer' ),
 					),
 				),
 				'meta'                => array(
@@ -179,20 +185,26 @@ class User_Update extends Ability_Definition {
 
 		$role_changes = $this->apply_role_changes( $user, $input );
 
+		$sessions_destroyed = 0;
+		if ( ! empty( $input['force_logout'] ) ) {
+			$sessions_destroyed = User_Helpers::destroy_sessions( $user_id );
+		}
+
 		$updated_user = get_user_by( 'id', $user_id );
 
 		return array(
-			'success'       => true,
+			'success'            => true,
 			/* translators: %s: user login */
-			'message'       => sprintf( __( 'User "%s" updated successfully.', 'acrossai-core-abilities' ), $user->user_login ),
-			'user_id'       => $user_id,
-			'user'          => $updated_user ? User_Helpers::format_user( $updated_user ) : array(),
-			'meta_updated'  => $meta_updated,
-			'meta_failed'   => $meta_failed,
-			'meta_deleted'  => $meta_deleted,
-			'roles_added'   => $role_changes['added'],
-			'roles_removed' => $role_changes['removed'],
-			'roles_failed'  => $role_changes['failed'],
+			'message'            => sprintf( __( 'User "%s" updated successfully.', 'acrossai-core-abilities' ), $user->user_login ),
+			'user_id'            => $user_id,
+			'user'               => $updated_user ? User_Helpers::format_user( $updated_user ) : array(),
+			'meta_updated'       => $meta_updated,
+			'meta_failed'        => $meta_failed,
+			'meta_deleted'       => $meta_deleted,
+			'roles_added'        => $role_changes['added'],
+			'roles_removed'      => $role_changes['removed'],
+			'roles_failed'       => $role_changes['failed'],
+			'sessions_destroyed' => $sessions_destroyed,
 		);
 	}
 

@@ -17,7 +17,7 @@ class User_Get extends Ability_Definition {
 			'name' => 'acrossai-core-abilities/user-get',
 			'args' => array(
 				'label'               => __( 'Get User', 'acrossai-core-abilities' ),
-				'description'         => __( 'Retrieve a single WordPress user by ID, login, email, or slug. Optionally attach user_meta via include_meta (all keys) or meta_keys (specific keys).', 'acrossai-core-abilities' ),
+				'description'         => __( 'Retrieve a single WordPress user by ID, login, email, or slug. Optionally attach user_meta via include_meta (all keys) or meta_keys (specific keys). Pass include_sessions to attach the user\'s active login sessions (login time, expiration, IP, UA).', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-users',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
@@ -35,10 +35,15 @@ class User_Get extends Ability_Definition {
 							'default'     => false,
 							'description' => __( 'Attach a "meta" map of all user_meta values to the response.', 'acrossai-core-abilities' ),
 						),
-						'meta_keys'    => array(
+						'meta_keys'        => array(
 							'type'        => 'array',
 							'items'       => array( 'type' => 'string' ),
 							'description' => __( 'Restrict the attached meta map to these keys. Implies include_meta=true.', 'acrossai-core-abilities' ),
+						),
+						'include_sessions' => array(
+							'type'        => 'boolean',
+							'default'     => false,
+							'description' => __( 'Attach the user\'s active login sessions to the response.', 'acrossai-core-abilities' ),
 						),
 					),
 					'required'             => array( 'user' ),
@@ -95,8 +100,9 @@ class User_Get extends Ability_Definition {
 			'user'    => User_Helpers::format_user(
 				$user,
 				array(
-					'include_meta' => $include_meta,
-					'meta_keys'    => $meta_keys,
+					'include_meta'     => $include_meta,
+					'meta_keys'        => $meta_keys,
+					'include_sessions' => ! empty( $input['include_sessions'] ),
 				)
 			),
 		);
