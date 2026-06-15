@@ -19,6 +19,8 @@ class Role_Capabilities extends Ability_Definition {
 				'label'               => __( 'Get Role Capabilities', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return the full capability map for a single registered role. Useful before granting a role via user-create / user-update.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-users',
+				'sub_group'           => 'roles',
+				'sub_group_label'     => __( 'Roles', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'list_users' );

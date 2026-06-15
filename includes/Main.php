@@ -154,7 +154,7 @@ final class Main {
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_URL', plugin_dir_url( \ACROSSAI_CORE_ABILITIES_PLUGIN_FILE ) );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME_SLUG', $this->plugin_name );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME', 'Acrossai Core Abilities' );
-		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.4' );
+		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.5' );
 	}
 
 	/**
@@ -268,14 +268,12 @@ final class Main {
 				new FileManager\File_Create();
 				new FileManager\File_Edit();
 				new FileManager\File_Delete();
-				new FileManager\Plugin_Structure_Read();
-				new FileManager\Plugin_Code_Read();
-				new FileManager\Plugin_Files_Manage();
-				new FileManager\Theme_Structure_Read();
-				new FileManager\Theme_Code_Read();
-				new FileManager\Theme_Files_Edit();
-				new FileManager\Theme_Json_Read();
-				new FileManager\Theme_Json_Update();
+				new Plugins\Plugin_Structure_Read();
+				new Plugins\Plugin_Code_Read();
+				new Plugins\Plugin_Files_Manage();
+				new Themes\Theme_Structure_Read();
+				new Themes\Theme_Code_Read();
+				new Themes\Theme_Files_Edit();
 				new FileManager\Wp_Config_Read();
 				new FileManager\Wp_Config_Edit();
 				new FileManager\Debug_Log_Read();
@@ -285,8 +283,30 @@ final class Main {
 				new Block\Pattern_Create();
 				new Block\Pattern_Update();
 				new Block\Pattern_Delete();
-				new Block\Templates_List_Read();
-				new Block\Template_Parts_Read();
+				new Block\Template_List();
+				new Block\Template_Read();
+				new Block\Template_Create();
+				new Block\Template_Update();
+				new Block\Template_Delete();
+				new Block\Global_Styles_List();
+				new Block\Global_Styles_Read();
+				new Block\Global_Styles_Create();
+				new Block\Global_Styles_Update();
+				new Block\Global_Styles_Delete();
+				new Block\Theme_Json_Read();
+				new Block\Theme_Json_Update();
+				new Block\Block_Style_Variations_List();
+				new Block\Block_Style_Variations_Read();
+				new Block\Block_Style_Variations_Create();
+				new Block\Block_Style_Variations_Update();
+				new Block\Block_Style_Variations_Delete();
+				new Block\Block_Info_List();
+				new Block\Block_Info_Read();
+				new Block\Template_Part_List();
+				new Block\Template_Part_Read();
+				new Block\Template_Part_Create();
+				new Block\Template_Part_Update();
+				new Block\Template_Part_Delete();
 			},
 			20
 		);

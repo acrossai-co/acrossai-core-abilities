@@ -2,6 +2,7 @@
 namespace Acrossai_Core_Abilities\Includes\Abilities\Plugins;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+use Acrossai_Core_Abilities\Includes\Utilities\File_Mods_Guard;
 use Acrossai_Core_Abilities\Includes\Utilities\Plugin_Helpers;
 
 defined( 'ABSPATH' ) || exit;
@@ -15,6 +16,8 @@ class Plugin_Install extends Ability_Definition {
 				'label'               => __( 'Install Plugin', 'acrossai-core-abilities' ),
 				'description'         => __( 'Install a plugin from the WordPress.org plugin directory by name or slug.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-plugins',
+				'sub_group'           => 'lifecycle',
+				'sub_group_label'     => __( 'Lifecycle', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );
@@ -62,6 +65,11 @@ class Plugin_Install extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
+		$blocked = File_Mods_Guard::blocked_response( 'install' );
+		if ( null !== $blocked ) {
+			return $blocked;
+		}
+
 		if ( empty( $input['plugin'] ) ) {
 			return array(
 				'success' => false,

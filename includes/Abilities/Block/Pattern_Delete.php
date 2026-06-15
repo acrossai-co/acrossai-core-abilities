@@ -2,6 +2,9 @@
 namespace Acrossai_Core_Abilities\Includes\Abilities\Block;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+use Acrossai_Core_Abilities\Includes\Utilities\File_Mods_Guard;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Db;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Detector;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,6 +24,8 @@ class Pattern_Delete extends Ability_Definition {
 				'label'               => __( 'Delete Block Pattern', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deletes a pattern from one storage location: db, theme /patterns, or plugin /patterns. Auto-detects the source; returns error_code=multiple_locations on ambiguity. For theme deletions, the child theme is preferred unless theme_type=parent is set explicitly.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-block',
+				'sub_group'           => 'patterns',
+				'sub_group_label'     => __( 'Patterns', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'edit_theme_options' );
@@ -64,6 +69,11 @@ class Pattern_Delete extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
+		$blocked = File_Mods_Guard::blocked_response();
+		if ( null !== $blocked ) {
+			return $blocked;
+		}
+
 		$slug = sanitize_title( (string) ( $input['slug'] ?? '' ) );
 		if ( '' === $slug ) {
 			return array( 'success' => false, 'message' => __( 'slug is required.', 'acrossai-core-abilities' ), 'error_code' => 'invalid_slug' );

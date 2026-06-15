@@ -2,6 +2,7 @@
 namespace Acrossai_Core_Abilities\Includes\Abilities\FileManager;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+use Acrossai_Core_Abilities\Includes\Utilities\File_Mods_Guard;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,6 +15,8 @@ class File_Delete extends Ability_Definition {
 				'label'               => __( 'Delete File', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deletes a file within the WordPress installation. Path must be relative to ABSPATH.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-file-manager',
+				'sub_group'           => 'files',
+				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );
@@ -55,6 +58,11 @@ class File_Delete extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
+		$blocked = File_Mods_Guard::blocked_response();
+		if ( null !== $blocked ) {
+			return $blocked;
+		}
+
 		$rel_path = sanitize_text_field( $input['path'] ?? '' );
 		$base     = rtrim( realpath( ABSPATH ) ?: ABSPATH, '/' );
 		$real     = realpath( $base . '/' . ltrim( $rel_path, '/' ) );

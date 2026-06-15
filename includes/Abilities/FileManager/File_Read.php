@@ -14,6 +14,8 @@ class File_Read extends Ability_Definition {
 				'label'               => __( 'Read File', 'acrossai-core-abilities' ),
 				'description'         => __( 'Reads the contents of a file within the WordPress installation. Path must be relative to ABSPATH.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-file-manager',
+				'sub_group'           => 'files',
+				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );

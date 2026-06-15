@@ -1,19 +1,21 @@
 <?php
-namespace Acrossai_Core_Abilities\Includes\Abilities\FileManager;
+namespace Acrossai_Core_Abilities\Includes\Abilities\Themes;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
 
 defined( 'ABSPATH' ) || exit;
 
-class Theme_Json_Read extends Ability_Definition {
+class Theme_Structure_Read extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'acrossai-core-abilities/theme-json-read',
+			'name' => 'acrossai-core-abilities/theme-structure-read',
 			'args' => array(
-				'label'               => __( 'Read theme.json', 'acrossai-core-abilities' ),
-				'description'         => __( 'Returns the parsed contents of theme.json for the active (or specified) theme.', 'acrossai-core-abilities' ),
-				'category'            => 'acrossai-core-abilities-file-manager',
+				'label'               => __( 'Read Theme Structure', 'acrossai-core-abilities' ),
+				'description'         => __( 'Lists all files within a theme directory. Defaults to the active theme when no slug is provided.', 'acrossai-core-abilities' ),
+				'category'            => 'acrossai-core-abilities-themes',
+				'sub_group'           => 'files',
+				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );
@@ -32,10 +34,13 @@ class Theme_Json_Read extends Ability_Definition {
 				'output_schema'       => array(
 					'type'       => 'object',
 					'properties' => array(
-						'success' => array( 'type' => 'boolean' ),
-						'data'    => array( 'type' => 'object' ),
-						'path'    => array( 'type' => 'string' ),
-						'message' => array( 'type' => 'string' ),
+						'success'    => array( 'type' => 'boolean' ),
+						'theme_path' => array( 'type' => 'string' ),
+						'files'      => array(
+							'type'  => 'array',
+							'items' => array( 'type' => 'string' ),
+						),
+						'message'    => array( 'type' => 'string' ),
 					),
 					'required'            => array( 'success' ),
 					'additionalProperties' => false,
@@ -67,28 +72,23 @@ class Theme_Json_Read extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'Theme directory not found.', 'acrossai-core-abilities' ) );
 		}
 
-		$json_path = $theme_dir . '/theme.json';
+		$iterator = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator( $theme_dir, \FilesystemIterator::SKIP_DOTS )
+		);
 
-		if ( ! is_file( $json_path ) ) {
-			return array( 'success' => false, 'message' => __( 'theme.json not found in this theme.', 'acrossai-core-abilities' ) );
+		$files = array();
+		foreach ( $iterator as $file ) {
+			if ( $file->isFile() ) {
+				$files[] = str_replace( $theme_dir . '/', '', $file->getPathname() );
+			}
 		}
 
-		$raw = file_get_contents( $json_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-
-		if ( false === $raw ) {
-			return array( 'success' => false, 'message' => __( 'Could not read theme.json.', 'acrossai-core-abilities' ) );
-		}
-
-		$data = json_decode( $raw, true );
-
-		if ( json_last_error() !== JSON_ERROR_NONE ) {
-			return array( 'success' => false, 'message' => __( 'theme.json contains invalid JSON.', 'acrossai-core-abilities' ) );
-		}
+		sort( $files );
 
 		return array(
-			'success' => true,
-			'data'    => $data,
-			'path'    => $json_path,
+			'success'    => true,
+			'theme_path' => $theme_dir,
+			'files'      => $files,
 		);
 	}
 }

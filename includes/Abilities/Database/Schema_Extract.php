@@ -14,6 +14,8 @@ class Schema_Extract extends Ability_Definition {
 				'label'               => __( 'Extract Database Schema', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns the full schema for every table in the database: columns, indexes, and CREATE TABLE SQL.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-database',
+				'sub_group'           => 'schema',
+				'sub_group_label'     => __( 'Schema', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );

@@ -14,6 +14,8 @@ class User_Create extends Ability_Definition {
 				'label'               => __( 'Create User', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a new WordPress user. If no password is provided, a strong one is generated and returned.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-users',
+				'sub_group'           => 'users',
+				'sub_group_label'     => __( 'Users', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'create_users' );

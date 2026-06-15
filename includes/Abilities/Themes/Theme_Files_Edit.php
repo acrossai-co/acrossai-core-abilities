@@ -1,7 +1,8 @@
 <?php
-namespace Acrossai_Core_Abilities\Includes\Abilities\FileManager;
+namespace Acrossai_Core_Abilities\Includes\Abilities\Themes;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+use Acrossai_Core_Abilities\Includes\Utilities\File_Mods_Guard;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -13,7 +14,9 @@ class Theme_Files_Edit extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Edit Theme File', 'acrossai-core-abilities' ),
 				'description'         => __( 'Overwrites the contents of a file inside a theme directory. Defaults to the active theme.', 'acrossai-core-abilities' ),
-				'category'            => 'acrossai-core-abilities-file-manager',
+				'category'            => 'acrossai-core-abilities-themes',
+				'sub_group'           => 'files',
+				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );
@@ -65,6 +68,11 @@ class Theme_Files_Edit extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
+		$blocked = File_Mods_Guard::blocked_response();
+		if ( null !== $blocked ) {
+			return $blocked;
+		}
+
 		$slug       = sanitize_text_field( $input['theme_slug'] ?? '' );
 		$rel_file   = sanitize_text_field( $input['file_path'] ?? '' );
 		$content    = $input['content'] ?? '';

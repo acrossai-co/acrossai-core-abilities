@@ -1,5 +1,5 @@
 <?php
-namespace Acrossai_Core_Abilities\Includes\Abilities\Block;
+namespace Acrossai_Core_Abilities\Includes\Utilities\Pattern;
 
 defined( 'ABSPATH' ) || exit;
 

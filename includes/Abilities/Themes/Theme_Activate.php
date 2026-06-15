@@ -15,6 +15,8 @@ class Theme_Activate extends Ability_Definition {
 				'label'               => __( 'Activate Theme', 'acrossai-core-abilities' ),
 				'description'         => __( 'Activate an installed WordPress theme by name, stylesheet, or partial match.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-themes',
+				'sub_group'           => 'lifecycle',
+				'sub_group_label'     => __( 'Lifecycle', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'switch_themes' );

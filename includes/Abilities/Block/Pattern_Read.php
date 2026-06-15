@@ -2,6 +2,9 @@
 namespace Acrossai_Core_Abilities\Includes\Abilities\Block;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Db;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Detector;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,6 +22,8 @@ class Pattern_Read extends Ability_Definition {
 				'label'               => __( 'Read Block Pattern', 'acrossai-core-abilities' ),
 				'description'         => __( 'Reads a pattern by slug from one of: db (wp_block CPT), theme /patterns folder, or plugin /patterns folder. Omit "source" to auto-detect — if the slug exists in more than one location the call fails with error_code=multiple_locations and the list of locations.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-block',
+				'sub_group'           => 'patterns',
+				'sub_group_label'     => __( 'Patterns', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'edit_theme_options' );

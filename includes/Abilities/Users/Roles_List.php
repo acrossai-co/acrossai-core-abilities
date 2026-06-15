@@ -20,6 +20,8 @@ class Roles_List extends Ability_Definition {
 				'label'               => __( 'List User Roles', 'acrossai-core-abilities' ),
 				'description'         => __( 'List all registered WordPress roles, optionally with their capability maps. Use these slugs as input to user-create / user-update.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-users',
+				'sub_group'           => 'roles',
+				'sub_group_label'     => __( 'Roles', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'list_users' );

@@ -14,6 +14,8 @@ class Db_Update extends Ability_Definition {
 				'label'               => __( 'Update Rows', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates rows matching the where clause using $wpdb->update() (values are auto-escaped). Requires a non-empty where to prevent accidental full-table updates.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-database',
+				'sub_group'           => 'queries',
+				'sub_group_label'     => __( 'Queries', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );

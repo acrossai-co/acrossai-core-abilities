@@ -14,6 +14,8 @@ class Db_Optimize extends Ability_Definition {
 				'label'               => __( 'Optimize Database Tables', 'acrossai-core-abilities' ),
 				'description'         => __( 'Runs OPTIMIZE TABLE on the specified tables. Defaults to all WordPress-prefixed tables when no tables are provided. Reclaims unused space and defragments data files.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-database',
+				'sub_group'           => 'maintenance',
+				'sub_group_label'     => __( 'Maintenance', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );

@@ -2,6 +2,9 @@
 namespace Acrossai_Core_Abilities\Includes\Abilities\Block;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Db;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Detector;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,6 +28,8 @@ class Pattern_List extends Ability_Definition {
 				'label'               => __( 'List Block Patterns', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists block patterns across all storage layers — database (wp_block CPT), theme /patterns folders (child + parent), and plugin /patterns folders. Pass "slug" to find every location that holds a specific pattern (detection step for Update / Delete).', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-block',
+				'sub_group'           => 'patterns',
+				'sub_group_label'     => __( 'Patterns', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'edit_theme_options' );

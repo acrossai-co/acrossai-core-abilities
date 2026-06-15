@@ -14,6 +14,8 @@ class Update_Check extends Ability_Definition {
 				'label'               => __( 'Check Updates', 'acrossai-core-abilities' ),
 				'description'         => __( 'Check for available WordPress core, plugin, and theme updates.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-plugins',
+				'sub_group'           => 'info',
+				'sub_group_label'     => __( 'Info', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );

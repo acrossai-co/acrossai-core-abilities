@@ -2,6 +2,9 @@
 namespace Acrossai_Core_Abilities\Includes\Abilities\Block;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+use Acrossai_Core_Abilities\Includes\Utilities\File_Mods_Guard;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Db;
+use Acrossai_Core_Abilities\Includes\Utilities\Pattern\Pattern_Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,6 +27,8 @@ class Pattern_Create extends Ability_Definition {
 				'label'               => __( 'Create Block Pattern', 'acrossai-core-abilities' ),
 				'description'         => __( 'Creates a block pattern. Default storage is the database (wp_block CPT). Pass source=theme to write a file under the active theme\'s /patterns (child preferred), or source=plugin with plugin_slug to write under that plugin\'s /patterns. Empty content is refused. Slug clashes at the target source are refused; use block-pattern-update to edit.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-block',
+				'sub_group'           => 'patterns',
+				'sub_group_label'     => __( 'Patterns', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'edit_theme_options' );
@@ -102,6 +107,11 @@ class Pattern_Create extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
+		$blocked = File_Mods_Guard::blocked_response();
+		if ( null !== $blocked ) {
+			return $blocked;
+		}
+
 		$source = sanitize_text_field( $input['source'] ?? 'db' );
 		$slug   = sanitize_title( (string) ( $input['slug'] ?? '' ) );
 

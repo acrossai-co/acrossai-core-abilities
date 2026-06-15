@@ -2,6 +2,7 @@
 namespace Acrossai_Core_Abilities\Includes\Abilities\FileManager;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+use Acrossai_Core_Abilities\Includes\Utilities\File_Mods_Guard;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -33,6 +34,8 @@ class Wp_Config_Edit extends Ability_Definition {
 				'label'               => __( 'Edit wp-config.php', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates the value of an existing non-sensitive constant in wp-config.php. Protected credential and secret constants cannot be modified.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-file-manager',
+				'sub_group'           => 'wp-config',
+				'sub_group_label'     => __( 'WP Config', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );
@@ -78,6 +81,11 @@ class Wp_Config_Edit extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
+		$blocked = File_Mods_Guard::blocked_response();
+		if ( null !== $blocked ) {
+			return $blocked;
+		}
+
 		$name  = strtoupper( sanitize_text_field( $input['constant_name'] ?? '' ) );
 		$value = $input['value'] ?? '';
 

@@ -19,6 +19,8 @@ class User_Get extends Ability_Definition {
 				'label'               => __( 'Get User', 'acrossai-core-abilities' ),
 				'description'         => __( 'Retrieve a single WordPress user by ID, login, email, or slug. Optionally attach user_meta via include_meta (all keys) or meta_keys (specific keys). Pass include_sessions to attach the user\'s active login sessions (login time, expiration, IP, UA).', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-users',
+				'sub_group'           => 'users',
+				'sub_group_label'     => __( 'Users', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'list_users' );

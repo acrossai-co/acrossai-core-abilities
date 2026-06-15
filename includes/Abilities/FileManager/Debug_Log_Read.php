@@ -14,6 +14,8 @@ class Debug_Log_Read extends Ability_Definition {
 				'label'               => __( 'Read Debug Log', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns the contents of wp-content/debug.log. Use the lines parameter to limit output to the last N lines.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-file-manager',
+				'sub_group'           => 'debug',
+				'sub_group_label'     => __( 'Debug', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );

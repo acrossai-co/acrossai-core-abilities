@@ -2,6 +2,7 @@
 namespace Acrossai_Core_Abilities\Includes\Abilities\FileManager;
 
 use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+use Acrossai_Core_Abilities\Includes\Utilities\File_Mods_Guard;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,6 +15,8 @@ class Debug_Log_Clear extends Ability_Definition {
 				'label'               => __( 'Clear Debug Log', 'acrossai-core-abilities' ),
 				'description'         => __( 'Truncates wp-content/debug.log to zero bytes.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-file-manager',
+				'sub_group'           => 'debug',
+				'sub_group_label'     => __( 'Debug', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'manage_options' );
@@ -50,6 +53,11 @@ class Debug_Log_Clear extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
+		$blocked = File_Mods_Guard::blocked_response();
+		if ( null !== $blocked ) {
+			return $blocked;
+		}
+
 		$log_path = WP_CONTENT_DIR . '/debug.log';
 
 		if ( ! is_file( $log_path ) ) {

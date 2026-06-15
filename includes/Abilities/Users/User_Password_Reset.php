@@ -15,6 +15,8 @@ class User_Password_Reset extends Ability_Definition {
 				'label'               => __( 'Reset User Password', 'acrossai-core-abilities' ),
 				'description'         => __( 'Send a password reset email to a user, or set a new password directly. Email notification is configurable.', 'acrossai-core-abilities' ),
 				'category'            => 'acrossai-core-abilities-users',
+				'sub_group'           => 'users',
+				'sub_group_label'     => __( 'Users', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
 					return current_user_can( 'edit_users' );
