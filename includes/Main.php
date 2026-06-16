@@ -5,6 +5,7 @@ use Acrossai_Core_Abilities\Includes\Abilities\Block;
 use Acrossai_Core_Abilities\Includes\Abilities\Cache;
 use Acrossai_Core_Abilities\Includes\Abilities\Comments;
 use Acrossai_Core_Abilities\Includes\Abilities\Content;
+use Acrossai_Core_Abilities\Includes\Abilities\Cron;
 use Acrossai_Core_Abilities\Includes\Abilities\Database;
 use Acrossai_Core_Abilities\Includes\Abilities\FileManager;
 use Acrossai_Core_Abilities\Includes\Abilities\Fonts;
@@ -16,6 +17,7 @@ use Acrossai_Core_Abilities\Includes\Abilities\Settings;
 use Acrossai_Core_Abilities\Includes\Abilities\Taxonomies;
 use Acrossai_Core_Abilities\Includes\Abilities\Themes;
 use Acrossai_Core_Abilities\Includes\Abilities\Users;
+use Acrossai_Core_Abilities\Includes\Utilities\Cron_Helpers;
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
@@ -162,7 +164,7 @@ final class Main {
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_URL', plugin_dir_url( \ACROSSAI_CORE_ABILITIES_PLUGIN_FILE ) );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME_SLUG', $this->plugin_name );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME', 'Acrossai Core Abilities' );
-		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.6' );
+		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.7' );
 	}
 
 	/**
@@ -284,6 +286,14 @@ final class Main {
 			Options_Abilities\Category_Registrar::instance(),
 			'register'
 		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Cron\Category_Registrar::instance(),
+			'register'
+		);
+
+		Cron_Helpers::register_filter();
 
 		add_action(
 			'plugins_loaded',
@@ -444,6 +454,21 @@ final class Main {
 				new Options_Abilities\Delete_Option();
 				new Options_Abilities\List_Options();
 				new Options_Abilities\Search_Options();
+				new Cron\Cron_List();
+				new Cron\Cron_Get();
+				new Cron\Cron_Next_Run();
+				new Cron\Cron_Exists();
+				new Cron\Cron_List_Schedules();
+				new Cron\Cron_Get_Schedule();
+				new Cron\Cron_Status();
+				new Cron\Cron_Overdue();
+				new Cron\Cron_Create();
+				new Cron\Cron_Update();
+				new Cron\Cron_Run_Now();
+				new Cron\Cron_Create_Schedule();
+				new Cron\Cron_Delete();
+				new Cron\Cron_Delete_All_By_Hook();
+				new Cron\Cron_Delete_Schedule();
 			},
 			20
 		);

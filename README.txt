@@ -5,7 +5,7 @@ Tags: comments, spam
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 0.0.6
+Stable tag: 0.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,13 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 == Changelog ==
+
+= 0.0.7 =
+* New ability category: Cron — 15 abilities for inspecting and managing WP-Cron.
+* Read (8): list events, get by hook, next-run lookup, existence check, list/get schedules, cron status (DISABLE_WP_CRON / ALTERNATE_WP_CRON / wp-cron URL / timezone), and overdue events with grace window.
+* Write (4): create event (one-off via wp_schedule_single_event() or recurring via wp_schedule_event()), update (unschedule + reschedule), run-hook-now (guarded — only fires hooks already registered in the cron array), and create custom schedule.
+* Delete (3): delete one event, delete all by hook (wp_unschedule_hook), delete custom schedule.
+* New utility `Cron_Helpers` — flattens _get_cron_array() into one row per event, and persists custom schedules via the "acrossai_custom_cron_schedules" option. The cron_schedules filter is hooked on every load so custom schedules survive across requests.
 
 = 0.0.6 =
 * New ability category: Fonts — Font Family + Font Face CRUD via the core Font Library REST endpoints (8 abilities).
