@@ -1,0 +1,83 @@
+<?php
+namespace Acrossai_Core_Abilities\Includes\Abilities\Taxonomies;
+
+use AcrossAI_Abilities_Manager\Includes\Modules\Library\Ability_Definition;
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Return the taxonomies attached to a given post type via get_object_taxonomies().
+ */
+class Get_Cpt_Taxonomies extends Ability_Definition {
+
+	protected function ability(): array {
+		return array(
+			'name' => 'ewpa/get-cpt-taxonomies',
+			'args' => array(
+				'label'               => __( 'Get CPT Taxonomies', 'acrossai-core-abilities' ),
+				'description'         => __( 'Return the taxonomies attached to a given post type via get_object_taxonomies( $post_type, "objects" ).', 'acrossai-core-abilities' ),
+				'category'            => 'acrossai-core-abilities-taxonomies',
+				'sub_group'           => 'taxonomies',
+				'sub_group_label'     => __( 'Taxonomies', 'acrossai-core-abilities' ),
+				'execute_callback'    => array( $this, 'execute' ),
+				'permission_callback' => static function (): bool {
+					return current_user_can( 'edit_posts' );
+				},
+				'input_schema'        => array(
+					'type'                 => 'object',
+					'properties'           => array(
+						'post_type' => array( 'type' => 'string' ),
+					),
+					'required'             => array( 'post_type' ),
+					'additionalProperties' => false,
+				),
+				'output_schema'       => array(
+					'type'       => 'object',
+					'properties' => array(
+						'success'    => array( 'type' => 'boolean' ),
+						'taxonomies' => array( 'type' => 'array' ),
+						'total'      => array( 'type' => 'integer' ),
+						'message'    => array( 'type' => 'string' ),
+					),
+					'required'             => array( 'success' ),
+					'additionalProperties' => false,
+				),
+				'meta'                => array(
+					'show_in_rest' => true,
+					'mcp'          => array( 'public' => true, 'type' => 'tool' ),
+					'annotations'  => array( 'readonly' => true, 'destructive' => false, 'idempotent' => true ),
+				),
+			),
+		);
+	}
+
+	public function execute( array $input = array() ): array {
+		$post_type = sanitize_key( (string) ( $input['post_type'] ?? '' ) );
+		if ( '' === $post_type || ! post_type_exists( $post_type ) ) {
+			return array(
+				'success' => false,
+				/* translators: %s: post type */
+				'message' => sprintf( __( 'Unknown post type "%s".', 'acrossai-core-abilities' ), $post_type ),
+			);
+		}
+
+		$taxonomies = get_object_taxonomies( $post_type, 'objects' );
+		$out        = array();
+		foreach ( $taxonomies as $slug => $obj ) {
+			$out[] = array(
+				'slug'         => (string) $slug,
+				'label'        => isset( $obj->label ) ? (string) $obj->label : (string) $slug,
+				'hierarchical' => (bool) $obj->hierarchical,
+				'public'       => (bool) $obj->public,
+				'show_in_rest' => (bool) $obj->show_in_rest,
+				'rest_base'    => isset( $obj->rest_base ) && $obj->rest_base ? (string) $obj->rest_base : (string) $slug,
+			);
+		}
+
+		return array(
+			'success'    => true,
+			'taxonomies' => $out,
+			'total'      => count( $out ),
+		);
+	}
+}

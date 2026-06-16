@@ -3,9 +3,17 @@ namespace Acrossai_Core_Abilities\Includes;
 
 use Acrossai_Core_Abilities\Includes\Abilities\Block;
 use Acrossai_Core_Abilities\Includes\Abilities\Cache;
+use Acrossai_Core_Abilities\Includes\Abilities\Comments;
+use Acrossai_Core_Abilities\Includes\Abilities\Content;
 use Acrossai_Core_Abilities\Includes\Abilities\Database;
 use Acrossai_Core_Abilities\Includes\Abilities\FileManager;
+use Acrossai_Core_Abilities\Includes\Abilities\Fonts;
+use Acrossai_Core_Abilities\Includes\Abilities\Media;
+use Acrossai_Core_Abilities\Includes\Abilities\Menus;
+use Acrossai_Core_Abilities\Includes\Abilities\Options as Options_Abilities;
 use Acrossai_Core_Abilities\Includes\Abilities\Plugins;
+use Acrossai_Core_Abilities\Includes\Abilities\Settings;
+use Acrossai_Core_Abilities\Includes\Abilities\Taxonomies;
 use Acrossai_Core_Abilities\Includes\Abilities\Themes;
 use Acrossai_Core_Abilities\Includes\Abilities\Users;
 
@@ -154,7 +162,7 @@ final class Main {
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_URL', plugin_dir_url( \ACROSSAI_CORE_ABILITIES_PLUGIN_FILE ) );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME_SLUG', $this->plugin_name );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME', 'Acrossai Core Abilities' );
-		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.5' );
+		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.6' );
 	}
 
 	/**
@@ -229,6 +237,54 @@ final class Main {
 			'register'
 		);
 
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Settings\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Fonts\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Content\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Taxonomies\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Media\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Comments\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Menus\Category_Registrar::instance(),
+			'register'
+		);
+
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			Options_Abilities\Category_Registrar::instance(),
+			'register'
+		);
+
 		add_action(
 			'plugins_loaded',
 			static function (): void {
@@ -240,6 +296,15 @@ final class Main {
 				new Plugins\Plugin_Install();
 				new Plugins\Plugin_List();
 				new Plugins\Update_Check();
+				new Settings\Permalink_Get();
+				new Settings\Permalink_Set();
+				new Settings\Permalink_Flush();
+				new Settings\Site_Title_Get();
+				new Settings\Site_Title_Update();
+				new Settings\Tagline_Get();
+				new Settings\Tagline_Update();
+				new Settings\Site_Icon_Get();
+				new Settings\Site_Icon_Update();
 				new Themes\Theme_Activate();
 				new Themes\Theme_Delete();
 				new Themes\Theme_Install();
@@ -307,6 +372,78 @@ final class Main {
 				new Block\Template_Part_Create();
 				new Block\Template_Part_Update();
 				new Block\Template_Part_Delete();
+				new Fonts\Font_Family_List();
+				new Fonts\Font_Family_Get();
+				new Fonts\Font_Family_Create();
+				new Fonts\Font_Family_Delete();
+				new Fonts\Font_Face_List();
+				new Fonts\Font_Face_Get();
+				new Fonts\Font_Face_Create();
+				new Fonts\Font_Face_Delete();
+				new Content\Create_Post();
+				new Content\Get_Post();
+				new Content\Get_Posts();
+				new Content\Update_Post();
+				new Content\Delete_Post();
+				new Content\Get_Post_Meta();
+				new Content\Update_Post_Meta();
+				new Content\Create_Page();
+				new Content\Get_Page();
+				new Content\Get_Pages();
+				new Content\Update_Page();
+				new Content\List_Post_Types();
+				new Content\Create_Cpt_Item();
+				new Content\Get_Cpt_Item();
+				new Content\Get_Cpt_Items();
+				new Content\Update_Cpt_Item();
+				new Content\Delete_Cpt_Item();
+				new Content\Get_Post_Translations();
+				new Content\Set_Post_Language();
+				new Content\Link_Post_Translation();
+				new Content\Je_List_Options_Pages();
+				new Content\Je_Get_Options_Page();
+				new Content\Je_Update_Options_Page_Field();
+				new Taxonomies\List_Taxonomies();
+				new Taxonomies\Get_Taxonomy();
+				new Taxonomies\Get_Cpt_Taxonomies();
+				new Taxonomies\List_Terms();
+				new Taxonomies\Get_Term();
+				new Taxonomies\Create_Term();
+				new Taxonomies\Update_Term();
+				new Taxonomies\Delete_Term();
+				new Taxonomies\Assign_Cpt_Terms();
+				new Media\Upload_Media();
+				new Media\Get_Media();
+				new Media\List_Media();
+				new Media\Update_Media();
+				new Media\Delete_Media();
+				new Media\Get_Media_Meta();
+				new Media\Update_Media_Meta();
+				new Comments\Create_Comment();
+				new Comments\Get_Comment();
+				new Comments\List_Comments();
+				new Comments\Update_Comment();
+				new Comments\Delete_Comment();
+				new Comments\Approve_Comment();
+				new Comments\Unapprove_Comment();
+				new Comments\Mark_As_Spam();
+				new Comments\Get_Comment_Meta();
+				new Comments\Update_Comment_Meta();
+				new Menus\List_Menus();
+				new Menus\Get_Menu();
+				new Menus\Create_Menu();
+				new Menus\Update_Menu();
+				new Menus\Delete_Menu();
+				new Menus\List_Menu_Items();
+				new Menus\Get_Menu_Item();
+				new Menus\Create_Menu_Item();
+				new Menus\Update_Menu_Item();
+				new Menus\Delete_Menu_Item();
+				new Options_Abilities\Get_Option();
+				new Options_Abilities\Update_Option();
+				new Options_Abilities\Delete_Option();
+				new Options_Abilities\List_Options();
+				new Options_Abilities\Search_Options();
 			},
 			20
 		);

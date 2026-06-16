@@ -5,7 +5,7 @@ Tags: comments, spam
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 0.0.5
+Stable tag: 0.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,9 +66,28 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 == Changelog ==
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
+= 0.0.6 =
+* New ability category: Fonts — Font Family + Font Face CRUD via the core Font Library REST endpoints (8 abilities).
+* New ability category: Content — Posts, Pages, custom post types, Multilanguage (Polylang + WPML), and Jet Engine Options Pages (23 abilities, `ewpa/` + `je-` prefixes).
+* New ability category: Taxonomies — taxonomy + term CRUD across any taxonomy, plus per-post term assignment (9 abilities).
+* New ability category: Media — Media Library CRUD + meta access (7 abilities).
+* New ability category: Comments — CRUD, moderation (approve / hold / spam), and meta (10 abilities).
+* New ability category: Menus — nav menus + menu items CRUD (10 abilities).
+* New ability category: Options — wp_options get/update/delete/list/search (5 abilities).
+* New ability category: Settings — Permalinks, Site Title, Tagline, Site Icon (11 abilities).
+* New utilities: `Multilang_Helpers` (Polylang/WPML detection), `Jet_Engine_Helpers` (Options Pages discovery), `Taxonomy_Routes` (taxonomy → REST base resolver), `Moderation` (shared comment status setter).
+
+= 0.0.5 =
+* Block category build-out: Templates, Template Parts, Global Styles, theme.json Settings, Block Style Variations, and Block Info (24 abilities).
+* New utility: `File_Mods_Guard` — single chokepoint for `DISALLOW_FILE_MODS` / `DISALLOW_FILE_EDIT`, consulted by every file-writing helper.
+* Per-category sub-group taxonomy adopted across the Library admin UI.
+
+= 0.0.2 =
+* Added FileManager, Themes, Users, Roles, and Sessions ability suites.
+* GitHub updater for auto-updates from the release ZIP attached to GitHub releases.
+
+= 0.0.1 =
+* Initial release: Plugin, Cache, and Database ability suites.
 
 == Arbitrary section ==
 

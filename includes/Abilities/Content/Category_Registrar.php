@@ -1,0 +1,36 @@
+<?php
+namespace Acrossai_Core_Abilities\Includes\Abilities\Content;
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Registers the WP ability category used by all Content abilities
+ * (Posts, Pages, CPTs, Multilanguage, Options Pages).
+ *
+ * Must run on wp_abilities_api_categories_init — before the Library Processor
+ * calls wp_register_ability() at wp_abilities_api_init P5.
+ */
+final class Category_Registrar {
+
+	/** @var self|null */
+	protected static $_instance = null;
+
+	private function __construct() {}
+
+	public static function instance(): self {
+		if ( null === self::$_instance ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	public function register(): void {
+		wp_register_ability_category(
+			'acrossai-core-abilities-content',
+			array(
+				'label'       => __( 'Acrossai Core Abilities — Content', 'acrossai-core-abilities' ),
+				'description' => __( 'Abilities for managing posts, pages, custom post types, multilingual translations, and Jet Engine options pages.', 'acrossai-core-abilities' ),
+			)
+		);
+	}
+}
