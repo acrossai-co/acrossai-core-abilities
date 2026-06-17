@@ -78,11 +78,11 @@ class Plugin_Files_Manage extends Ability_Definition {
 		$dst_path    = $plugins_dir . '/' . ltrim( sanitize_text_field( $input['destination'] ?? '' ), '/' );
 		$dst_dir     = realpath( dirname( $dst_path ) );
 
-		if ( false === $src_real || 0 !== strpos( $src_real, $plugins_dir ) || ! is_file( $src_real ) ) {
+		if ( false === $src_real || 0 !== strpos( $src_real, $plugins_dir . '/' ) || ! is_file( $src_real ) ) {
 			return array( 'success' => false, 'message' => __( 'Source file not found or outside plugin directory.', 'acrossai-core-abilities' ) );
 		}
 
-		if ( false === $dst_dir || 0 !== strpos( $dst_dir, $plugins_dir ) ) {
+		if ( false === $dst_dir || ( $dst_dir !== $plugins_dir && 0 !== strpos( $dst_dir, $plugins_dir . '/' ) ) ) {
 			return array( 'success' => false, 'message' => __( 'Destination is outside the plugin directory.', 'acrossai-core-abilities' ) );
 		}
 

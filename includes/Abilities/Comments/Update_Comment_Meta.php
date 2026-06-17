@@ -18,7 +18,7 @@ class Update_Comment_Meta extends Ability_Definition {
 				'sub_group_label'     => __( 'Meta', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'moderate_comments' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -58,22 +58,22 @@ class Update_Comment_Meta extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'id and a non-empty meta object are required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/comments/' . $id );
-		$request->set_param( 'meta', $meta );
-
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		if ( null === get_comment( $id ) ) {
+			return array( 'success' => false, 'message' => __( 'Comment not found.', 'acrossai-core-abilities' ) );
 		}
 
-		$data = (array) $response->get_data();
+		foreach ( $meta as $key => $value ) {
+			$key = (string) $key;
+			if ( ! Comment_Formatter::is_meta_key_writable( $key ) ) {
+				continue;
+			}
+			$sanitized = sanitize_meta( $key, $value, 'comment' );
+			update_comment_meta( $id, $key, wp_slash( $sanitized ) );
+		}
 
 		return array(
 			'success' => true,
-			'meta'    => isset( $data['meta'] ) ? (array) $data['meta'] : array(),
+			'meta'    => Comment_Formatter::build_meta_map( $id ),
 			/* translators: %d: comment ID */
 			'message' => sprintf( __( 'Wrote meta on comment #%d.', 'acrossai-core-abilities' ), $id ),
 		);

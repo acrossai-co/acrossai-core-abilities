@@ -18,7 +18,7 @@ class Delete_Menu extends Ability_Definition {
 				'sub_group_label'     => __( 'Menus', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -54,23 +54,26 @@ class Delete_Menu extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'DELETE', '/wp/v2/menus/' . $id );
-		$request->set_param( 'force', true );
+		$menu = wp_get_nav_menu_object( $id );
+		if ( ! ( $menu instanceof \WP_Term ) ) {
+			return array( 'success' => false, 'message' => __( 'Menu not found.', 'acrossai-core-abilities' ) );
+		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		$snapshot = Menu_Formatter::menu_to_array( $menu );
+		$result   = wp_delete_nav_menu( $id );
+
+		if ( is_wp_error( $result ) || false === $result ) {
+			return Menu_Formatter::error_from(
+				$result,
+				/* translators: %d: menu ID */
+				sprintf( __( 'Could not delete menu #%d.', 'acrossai-core-abilities' ), $id )
 			);
 		}
 
-		$data = (array) $response->get_data();
-
 		return array(
 			'success' => true,
-			'deleted' => ! empty( $data['deleted'] ),
-			'menu'    => isset( $data['previous'] ) ? (array) $data['previous'] : array(),
+			'deleted' => true,
+			'menu'    => $snapshot,
 			/* translators: %d: menu ID */
 			'message' => sprintf( __( 'Deleted menu #%d.', 'acrossai-core-abilities' ), $id ),
 		);

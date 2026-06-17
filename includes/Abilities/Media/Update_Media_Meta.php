@@ -18,7 +18,7 @@ class Update_Media_Meta extends Ability_Definition {
 				'sub_group_label'     => __( 'Meta', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'upload_files' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -58,22 +58,23 @@ class Update_Media_Meta extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'id and a non-empty meta object are required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/media/' . $id );
-		$request->set_param( 'meta', $meta );
-
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		$post = get_post( $id );
+		if ( ! ( $post instanceof \WP_Post ) || 'attachment' !== $post->post_type ) {
+			return array( 'success' => false, 'message' => __( 'Attachment not found.', 'acrossai-core-abilities' ) );
 		}
 
-		$data = (array) $response->get_data();
+		foreach ( $meta as $key => $value ) {
+			$key = (string) $key;
+			if ( ! Media_Formatter::is_meta_key_writable( $key ) ) {
+				continue;
+			}
+			$sanitized = sanitize_meta( $key, $value, 'post' );
+			update_post_meta( $id, $key, wp_slash( $sanitized ) );
+		}
 
 		return array(
 			'success' => true,
-			'meta'    => isset( $data['meta'] ) ? (array) $data['meta'] : array(),
+			'meta'    => Media_Formatter::build_meta_map( $id ),
 			/* translators: %d: attachment ID */
 			'message' => sprintf( __( 'Wrote meta on attachment #%d.', 'acrossai-core-abilities' ), $id ),
 		);

@@ -22,7 +22,7 @@ class List_Terms extends Ability_Definition {
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'manage_categories' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -59,42 +59,60 @@ class List_Terms extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$rest_base = Taxonomy_Routes::rest_base( sanitize_key( (string) ( $input['taxonomy'] ?? '' ) ) );
-		if ( is_wp_error( $rest_base ) ) {
-			return array( 'success' => false, 'message' => $rest_base->get_error_message() );
+		$taxonomy = sanitize_key( (string) ( $input['taxonomy'] ?? '' ) );
+		$check    = Taxonomy_Routes::rest_base( $taxonomy );
+		if ( is_wp_error( $check ) ) {
+			return array( 'success' => false, 'message' => $check->get_error_message() );
 		}
 
-		$request = new \WP_REST_Request( 'GET', '/wp/v2/' . $rest_base );
-		$request->set_param( 'page', max( 1, (int) ( $input['page'] ?? 1 ) ) );
-		$request->set_param( 'per_page', min( 100, max( 1, (int) ( $input['per_page'] ?? 10 ) ) ) );
+		$page     = max( 1, (int) ( $input['page'] ?? 1 ) );
+		$per_page = min( 100, max( 1, (int) ( $input['per_page'] ?? 10 ) ) );
+
+		$filters = array(
+			'taxonomy'   => $taxonomy,
+			'hide_empty' => false,
+		);
 		if ( ! empty( $input['search'] ) ) {
-			$request->set_param( 'search', sanitize_text_field( (string) $input['search'] ) );
+			$filters['search'] = sanitize_text_field( (string) $input['search'] );
 		}
 		if ( isset( $input['parent'] ) ) {
-			$request->set_param( 'parent', (int) $input['parent'] );
+			$filters['parent'] = (int) $input['parent'];
 		}
 		if ( ! empty( $input['orderby'] ) ) {
-			$request->set_param( 'orderby', sanitize_key( (string) $input['orderby'] ) );
+			$filters['orderby'] = sanitize_key( (string) $input['orderby'] );
 		}
-		if ( ! empty( $input['order'] ) ) {
-			$request->set_param( 'order', strtolower( (string) $input['order'] ) === 'desc' ? 'desc' : 'asc' );
+		$filters['order'] = strtolower( (string) ( $input['order'] ?? 'asc' ) ) === 'desc' ? 'DESC' : 'ASC';
+
+		$items = get_terms(
+			array_merge(
+				$filters,
+				array(
+					'number' => $per_page,
+					'offset' => ( $page - 1 ) * $per_page,
+				)
+			)
+		);
+		if ( is_wp_error( $items ) ) {
+			return Term_Formatter::error_from( $items, __( 'Could not list terms.', 'acrossai-core-abilities' ) );
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
-		}
+		$total = (int) wp_count_terms( $filters );
 
-		$data    = (array) $response->get_data();
-		$headers = $response->get_headers();
-		$total   = isset( $headers['X-WP-Total'] ) ? (int) $headers['X-WP-Total'] : count( $data );
+		$formatted = array_values(
+			array_map(
+				array( Term_Formatter::class, 'term_to_array' ),
+				array_filter(
+					(array) $items,
+					static function ( $t ): bool {
+						return $t instanceof \WP_Term;
+					}
+				)
+			)
+		);
 
 		return array(
 			'success' => true,
-			'terms'   => array_values( $data ),
+			'terms'   => $formatted,
 			'total'   => $total,
 		);
 	}

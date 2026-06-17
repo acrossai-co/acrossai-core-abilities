@@ -72,13 +72,13 @@ class Theme_Code_Read extends Ability_Definition {
 			? realpath( $themes_dir . '/' . $slug )
 			: realpath( get_stylesheet_directory() );
 
-		if ( false === $theme_dir || 0 !== strpos( $theme_dir, $themes_dir ) || ! is_dir( $theme_dir ) ) {
+		if ( false === $theme_dir || 0 !== strpos( $theme_dir, $themes_dir . '/' ) || ! is_dir( $theme_dir ) ) {
 			return array( 'success' => false, 'message' => __( 'Theme directory not found.', 'acrossai-core-abilities' ) );
 		}
 
 		$abs_file = realpath( $theme_dir . '/' . ltrim( $rel_file, '/' ) );
 
-		if ( false === $abs_file || 0 !== strpos( $abs_file, $theme_dir ) || ! is_file( $abs_file ) ) {
+		if ( false === $abs_file || 0 !== strpos( $abs_file, $theme_dir . '/' ) || ! is_file( $abs_file ) ) {
 			return array( 'success' => false, 'message' => __( 'File not found within theme directory.', 'acrossai-core-abilities' ) );
 		}
 

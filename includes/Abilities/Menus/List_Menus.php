@@ -18,7 +18,7 @@ class List_Menus extends Ability_Definition {
 				'sub_group_label'     => __( 'Menus', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -49,22 +49,32 @@ class List_Menus extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$request = new \WP_REST_Request( 'GET', '/wp/v2/menus' );
-		$request->set_param( 'page', max( 1, (int) ( $input['page'] ?? 1 ) ) );
-		$request->set_param( 'per_page', min( 100, max( 1, (int) ( $input['per_page'] ?? 25 ) ) ) );
+		$page     = max( 1, (int) ( $input['page'] ?? 1 ) );
+		$per_page = min( 100, max( 1, (int) ( $input['per_page'] ?? 25 ) ) );
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array( 'success' => false, 'message' => $response->as_error()->get_error_message() );
+		$all = wp_get_nav_menus( array( 'hide_empty' => false ) );
+		if ( ! is_array( $all ) ) {
+			$all = array();
 		}
 
-		$data    = (array) $response->get_data();
-		$headers = $response->get_headers();
-		$total   = isset( $headers['X-WP-Total'] ) ? (int) $headers['X-WP-Total'] : count( $data );
+		$total = count( $all );
+		$slice = array_slice( $all, ( $page - 1 ) * $per_page, $per_page );
+
+		$formatted = array_map(
+			array( Menu_Formatter::class, 'menu_to_array' ),
+			array_values(
+				array_filter(
+					$slice,
+					static function ( $t ): bool {
+						return $t instanceof \WP_Term;
+					}
+				)
+			)
+		);
 
 		return array(
 			'success' => true,
-			'menus'   => array_values( $data ),
+			'menus'   => $formatted,
 			'total'   => $total,
 		);
 	}

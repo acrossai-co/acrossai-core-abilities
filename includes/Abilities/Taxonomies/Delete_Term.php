@@ -18,7 +18,7 @@ class Delete_Term extends Ability_Definition {
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'manage_categories' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -50,32 +50,36 @@ class Delete_Term extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$base = Taxonomy_Routes::rest_base( sanitize_key( (string) ( $input['taxonomy'] ?? '' ) ) );
-		if ( is_wp_error( $base ) ) {
-			return array( 'success' => false, 'message' => $base->get_error_message() );
+		$taxonomy = sanitize_key( (string) ( $input['taxonomy'] ?? '' ) );
+		$check    = Taxonomy_Routes::rest_base( $taxonomy );
+		if ( is_wp_error( $check ) ) {
+			return array( 'success' => false, 'message' => $check->get_error_message() );
 		}
 		$id = (int) ( $input['id'] ?? 0 );
 		if ( $id <= 0 ) {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'DELETE', '/wp/v2/' . $base . '/' . $id );
-		$request->set_param( 'force', true );
+		$term = get_term( $id, $taxonomy );
+		if ( ! ( $term instanceof \WP_Term ) ) {
+			return array( 'success' => false, 'message' => __( 'Term not found.', 'acrossai-core-abilities' ) );
+		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		$snapshot = Term_Formatter::term_to_array( $term );
+		$result   = wp_delete_term( $id, $taxonomy );
+
+		if ( is_wp_error( $result ) || false === $result || 0 === $result ) {
+			return Term_Formatter::error_from(
+				$result,
+				/* translators: %d: term ID */
+				sprintf( __( 'Could not delete term #%d.', 'acrossai-core-abilities' ), $id )
 			);
 		}
 
-		$data = (array) $response->get_data();
-
 		return array(
 			'success' => true,
-			'deleted' => ! empty( $data['deleted'] ),
-			'term'    => isset( $data['previous'] ) ? (array) $data['previous'] : array(),
+			'deleted' => true,
+			'term'    => $snapshot,
 			/* translators: %d: term ID */
 			'message' => sprintf( __( 'Deleted term #%d.', 'acrossai-core-abilities' ), $id ),
 		);

@@ -18,7 +18,7 @@ class Update_Media extends Ability_Definition {
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'upload_files' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -57,24 +57,45 @@ class Update_Media extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/media/' . $id );
-		foreach ( array( 'title', 'caption', 'description', 'alt_text' ) as $field ) {
-			if ( isset( $input[ $field ] ) ) {
-				$request->set_param( $field, (string) $input[ $field ] );
+		$post = get_post( $id );
+		if ( ! ( $post instanceof \WP_Post ) || 'attachment' !== $post->post_type ) {
+			return array( 'success' => false, 'message' => __( 'Attachment not found.', 'acrossai-core-abilities' ) );
+		}
+
+		$post_data  = array( 'ID' => $id );
+		$has_change = false;
+		if ( isset( $input['title'] ) ) {
+			$post_data['post_title'] = (string) $input['title'];
+			$has_change              = true;
+		}
+		if ( isset( $input['caption'] ) ) {
+			$post_data['post_excerpt'] = (string) $input['caption'];
+			$has_change                = true;
+		}
+		if ( isset( $input['description'] ) ) {
+			$post_data['post_content'] = (string) $input['description'];
+			$has_change                = true;
+		}
+
+		if ( $has_change ) {
+			$result = wp_update_post( wp_slash( $post_data ), true );
+			if ( is_wp_error( $result ) || 0 === $result ) {
+				return Media_Formatter::error_from(
+					$result,
+					/* translators: %d: attachment ID */
+					sprintf( __( 'Could not update attachment #%d.', 'acrossai-core-abilities' ), $id )
+				);
 			}
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		if ( isset( $input['alt_text'] ) ) {
+			update_post_meta( $id, '_wp_attachment_image_alt', wp_slash( (string) $input['alt_text'] ) );
 		}
 
+		$updated = get_post( $id );
 		return array(
 			'success' => true,
-			'media'   => (array) $response->get_data(),
+			'media'   => $updated instanceof \WP_Post ? Media_Formatter::to_array( $updated ) : array(),
 			/* translators: %d: attachment ID */
 			'message' => sprintf( __( 'Updated attachment #%d.', 'acrossai-core-abilities' ), $id ),
 		);

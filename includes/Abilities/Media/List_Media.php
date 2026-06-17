@@ -18,7 +18,7 @@ class List_Media extends Ability_Definition {
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'upload_files' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -52,32 +52,46 @@ class List_Media extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$request = new \WP_REST_Request( 'GET', '/wp/v2/media' );
-		$request->set_param( 'page', max( 1, (int) ( $input['page'] ?? 1 ) ) );
-		$request->set_param( 'per_page', min( 100, max( 1, (int) ( $input['per_page'] ?? 10 ) ) ) );
+		$page     = max( 1, (int) ( $input['page'] ?? 1 ) );
+		$per_page = min( 100, max( 1, (int) ( $input['per_page'] ?? 10 ) ) );
+
+		$args = array(
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'posts_per_page' => $per_page,
+			'paged'          => $page,
+			'no_found_rows'  => false,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+		);
 		if ( ! empty( $input['search'] ) ) {
-			$request->set_param( 'search', sanitize_text_field( (string) $input['search'] ) );
+			$args['s'] = sanitize_text_field( (string) $input['search'] );
 		}
 		if ( ! empty( $input['mime_type'] ) ) {
-			$request->set_param( 'mime_type', sanitize_mime_type( (string) $input['mime_type'] ) );
+			$args['post_mime_type'] = sanitize_mime_type( (string) $input['mime_type'] );
 		}
 		if ( isset( $input['parent'] ) ) {
-			$request->set_param( 'parent', (int) $input['parent'] );
+			$args['post_parent'] = (int) $input['parent'];
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array( 'success' => false, 'message' => $response->as_error()->get_error_message() );
-		}
+		$query = new \WP_Query( $args );
 
-		$data    = (array) $response->get_data();
-		$headers = $response->get_headers();
-		$total   = isset( $headers['X-WP-Total'] ) ? (int) $headers['X-WP-Total'] : count( $data );
+		$formatted = array_map(
+			array( Media_Formatter::class, 'to_array' ),
+			array_values(
+				array_filter(
+					$query->posts,
+					static function ( $p ): bool {
+						return $p instanceof \WP_Post;
+					}
+				)
+			)
+		);
 
 		return array(
 			'success' => true,
-			'media'   => array_values( $data ),
-			'total'   => $total,
+			'media'   => $formatted,
+			'total'   => (int) $query->found_posts,
 		);
 	}
 }

@@ -8,6 +8,9 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Deletes a font family. The core endpoint requires force=true (no trash for
  * font CPTs), so this ability sets it implicitly.
+ *
+ * WordPress core does not expose dedicated wp_*_font_family functions —
+ * everything goes through the REST controller, so this ability does too.
  */
 class Font_Family_Delete extends Ability_Definition {
 
@@ -22,7 +25,7 @@ class Font_Family_Delete extends Ability_Definition {
 				'sub_group_label'     => __( 'Font Families', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',

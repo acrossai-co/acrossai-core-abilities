@@ -18,7 +18,7 @@ class Get_Comment_Meta extends Ability_Definition {
 				'sub_group_label'     => __( 'Meta', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'moderate_comments' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -55,26 +55,22 @@ class Get_Comment_Meta extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'GET', '/wp/v2/comments/' . $id );
-		$request->set_param( 'context', 'edit' );
-
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		if ( null === get_comment( $id ) ) {
+			return array( 'success' => false, 'message' => __( 'Comment not found.', 'acrossai-core-abilities' ) );
 		}
 
-		$data = (array) $response->get_data();
-		$meta = isset( $data['meta'] ) ? (array) $data['meta'] : array();
+		$meta_map = Comment_Formatter::build_meta_map( $id );
+
 		if ( '' !== $key ) {
-			$meta = array_key_exists( $key, $meta ) ? $meta[ $key ] : null;
+			return array(
+				'success' => true,
+				'meta'    => array_key_exists( $key, $meta_map ) ? $meta_map[ $key ] : null,
+			);
 		}
 
 		return array(
 			'success' => true,
-			'meta'    => $meta,
+			'meta'    => $meta_map,
 		);
 	}
 }

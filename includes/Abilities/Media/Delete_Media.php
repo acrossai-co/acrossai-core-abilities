@@ -18,7 +18,7 @@ class Delete_Media extends Ability_Definition {
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'delete_posts' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -54,23 +54,29 @@ class Delete_Media extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'DELETE', '/wp/v2/media/' . $id );
-		$request->set_param( 'force', true );
+		$post = get_post( $id );
+		if ( ! ( $post instanceof \WP_Post ) || 'attachment' !== $post->post_type ) {
+			return array( 'success' => false, 'message' => __( 'Attachment not found.', 'acrossai-core-abilities' ) );
+		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		$snapshot = Media_Formatter::to_array( $post );
+
+		// wp_delete_attachment (NOT wp_delete_post) removes the file from disk
+		// and cleans up intermediate image sizes too. force=true matches the
+		// REST controller, which always hard-deletes attachments.
+		$deleted = wp_delete_attachment( $id, true );
+		if ( ! $deleted ) {
+			return Media_Formatter::error_from(
+				false,
+				/* translators: %d: attachment ID */
+				sprintf( __( 'Could not delete attachment #%d.', 'acrossai-core-abilities' ), $id )
 			);
 		}
 
-		$data = (array) $response->get_data();
-
 		return array(
 			'success' => true,
-			'deleted' => ! empty( $data['deleted'] ),
-			'media'   => isset( $data['previous'] ) ? (array) $data['previous'] : array(),
+			'deleted' => true,
+			'media'   => $snapshot,
 			/* translators: %d: attachment ID */
 			'message' => sprintf( __( 'Deleted attachment #%d.', 'acrossai-core-abilities' ), $id ),
 		);

@@ -12,6 +12,9 @@ defined( 'ABSPATH' ) || exit;
  * (because the create endpoint shares the multipart/form-data shape used by
  * font-face uploads). This ability accepts plain fields and serialises them
  * before dispatching the inner request.
+ *
+ * WordPress core does not expose dedicated wp_*_font_family functions —
+ * everything goes through the REST controller, so this ability does too.
  */
 class Font_Family_Create extends Ability_Definition {
 
@@ -26,7 +29,7 @@ class Font_Family_Create extends Ability_Definition {
 				'sub_group_label'     => __( 'Font Families', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',

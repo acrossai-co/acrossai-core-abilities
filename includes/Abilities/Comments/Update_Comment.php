@@ -18,7 +18,7 @@ class Update_Comment extends Ability_Definition {
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'moderate_comments' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -58,26 +58,68 @@ class Update_Comment extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/comments/' . $id );
-		foreach ( array( 'content', 'status', 'author_name', 'author_email', 'author_url' ) as $field ) {
-			if ( isset( $input[ $field ] ) ) {
-				$request->set_param( $field, (string) $input[ $field ] );
-			}
+		if ( null === get_comment( $id ) ) {
+			return array( 'success' => false, 'message' => __( 'Comment not found.', 'acrossai-core-abilities' ) );
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		$data = array( 'comment_ID' => $id );
+		if ( isset( $input['content'] ) ) {
+			$data['comment_content'] = (string) $input['content'];
+		}
+		if ( isset( $input['status'] ) ) {
+			$data['comment_approved'] = self::map_input_status( (string) $input['status'] );
+		}
+		if ( isset( $input['author_name'] ) ) {
+			$data['comment_author'] = (string) $input['author_name'];
+		}
+		if ( isset( $input['author_email'] ) ) {
+			$data['comment_author_email'] = (string) $input['author_email'];
+		}
+		if ( isset( $input['author_url'] ) ) {
+			$data['comment_author_url'] = (string) $input['author_url'];
+		}
+
+		if ( 1 === count( $data ) ) {
+			return array( 'success' => false, 'message' => __( 'At least one field to update is required.', 'acrossai-core-abilities' ) );
+		}
+
+		$result = wp_update_comment( wp_slash( $data ), true );
+		if ( is_wp_error( $result ) || false === $result ) {
+			return Comment_Formatter::error_from(
+				$result,
+				/* translators: %d: comment ID */
+				sprintf( __( 'Could not update comment #%d.', 'acrossai-core-abilities' ), $id )
 			);
 		}
 
+		$updated = get_comment( $id );
 		return array(
 			'success' => true,
-			'comment' => (array) $response->get_data(),
+			'comment' => null !== $updated ? Comment_Formatter::to_array( $updated ) : array(),
 			/* translators: %d: comment ID */
 			'message' => sprintf( __( 'Updated comment #%d.', 'acrossai-core-abilities' ), $id ),
 		);
+	}
+
+	/**
+	 * Translate the public status vocabulary into the raw `comment_approved`
+	 * value expected by wp_update_comment.
+	 */
+	private static function map_input_status( string $status ): string {
+		switch ( $status ) {
+			case 'hold':
+			case 'unapproved':
+			case '0':
+				return '0';
+			case 'spam':
+				return 'spam';
+			case 'trash':
+				return 'trash';
+			case 'approved':
+			case 'approve':
+			case '1':
+			default:
+				return '1';
+		}
 	}
 }

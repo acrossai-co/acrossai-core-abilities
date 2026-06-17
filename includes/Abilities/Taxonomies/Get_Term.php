@@ -18,7 +18,7 @@ class Get_Term extends Ability_Definition {
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'manage_categories' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -49,27 +49,27 @@ class Get_Term extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$base = Taxonomy_Routes::rest_base( sanitize_key( (string) ( $input['taxonomy'] ?? '' ) ) );
-		if ( is_wp_error( $base ) ) {
-			return array( 'success' => false, 'message' => $base->get_error_message() );
+		$taxonomy = sanitize_key( (string) ( $input['taxonomy'] ?? '' ) );
+		$check    = Taxonomy_Routes::rest_base( $taxonomy );
+		if ( is_wp_error( $check ) ) {
+			return array( 'success' => false, 'message' => $check->get_error_message() );
 		}
 		$id = (int) ( $input['id'] ?? 0 );
 		if ( $id <= 0 ) {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request  = new \WP_REST_Request( 'GET', '/wp/v2/' . $base . '/' . $id );
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		$term = get_term( $id, $taxonomy );
+		if ( is_wp_error( $term ) ) {
+			return Term_Formatter::error_from( $term, __( 'Term not found.', 'acrossai-core-abilities' ) );
+		}
+		if ( ! ( $term instanceof \WP_Term ) ) {
+			return array( 'success' => false, 'message' => __( 'Term not found.', 'acrossai-core-abilities' ) );
 		}
 
 		return array(
 			'success' => true,
-			'term'    => (array) $response->get_data(),
+			'term'    => Term_Formatter::term_to_array( $term ),
 		);
 	}
 }

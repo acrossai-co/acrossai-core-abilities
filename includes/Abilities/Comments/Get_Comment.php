@@ -18,7 +18,7 @@ class Get_Comment extends Ability_Definition {
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'moderate_comments' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -53,19 +53,14 @@ class Get_Comment extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request  = new \WP_REST_Request( 'GET', '/wp/v2/comments/' . $id );
-		$request->set_param( 'context', 'edit' );
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		$comment = get_comment( $id );
+		if ( null === $comment ) {
+			return array( 'success' => false, 'message' => __( 'Comment not found.', 'acrossai-core-abilities' ) );
 		}
 
 		return array(
 			'success' => true,
-			'comment' => (array) $response->get_data(),
+			'comment' => Comment_Formatter::to_array( $comment ),
 		);
 	}
 }

@@ -19,7 +19,7 @@ class User_Delete extends Ability_Definition {
 				'sub_group_label'     => __( 'Users', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'delete_users' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',

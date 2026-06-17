@@ -21,7 +21,7 @@ class List_Taxonomies extends Ability_Definition {
 				'sub_group_label'     => __( 'Taxonomies', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'manage_categories' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -54,25 +54,24 @@ class List_Taxonomies extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$request = new \WP_REST_Request( 'GET', '/wp/v2/taxonomies' );
+		$args = array( 'show_in_rest' => true );
 		if ( ! empty( $input['type'] ) ) {
-			$request->set_param( 'type', sanitize_key( (string) $input['type'] ) );
+			$args['object_type'] = array( sanitize_key( (string) $input['type'] ) );
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
-		}
+		$objects = get_taxonomies( $args, 'objects' );
 
-		$data = (array) $response->get_data();
+		$formatted = array_values(
+			array_map(
+				array( Term_Formatter::class, 'taxonomy_to_array' ),
+				$objects
+			)
+		);
 
 		return array(
 			'success'    => true,
-			'taxonomies' => array_values( $data ),
-			'total'      => count( $data ),
+			'taxonomies' => $formatted,
+			'total'      => count( $formatted ),
 		);
 	}
 }

@@ -75,7 +75,7 @@ class File_Create extends Ability_Definition {
 		$abs_path = $base . '/' . ltrim( $rel_path, '/' );
 		$real     = realpath( dirname( $abs_path ) );
 
-		if ( false === $real || 0 !== strpos( $real, $base ) ) {
+		if ( false === $real || 0 !== strpos( $real, $base . '/' ) ) {
 			return array( 'success' => false, 'message' => __( 'Invalid or disallowed file path.', 'acrossai-core-abilities' ) );
 		}
 

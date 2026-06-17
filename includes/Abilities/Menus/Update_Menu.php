@@ -18,7 +18,7 @@ class Update_Menu extends Ability_Definition {
 				'sub_group_label'     => __( 'Menus', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -57,31 +57,44 @@ class Update_Menu extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/menus/' . $id );
-		if ( isset( $input['name'] ) ) {
-			$request->set_param( 'name', sanitize_text_field( (string) $input['name'] ) );
-		}
-		if ( isset( $input['slug'] ) ) {
-			$request->set_param( 'slug', sanitize_title( (string) $input['slug'] ) );
-		}
-		if ( isset( $input['description'] ) ) {
-			$request->set_param( 'description', (string) $input['description'] );
-		}
-		if ( isset( $input['locations'] ) && is_array( $input['locations'] ) ) {
-			$request->set_param( 'locations', array_map( 'sanitize_key', $input['locations'] ) );
+		$menu = wp_get_nav_menu_object( $id );
+		if ( ! ( $menu instanceof \WP_Term ) ) {
+			return array( 'success' => false, 'message' => __( 'Menu not found.', 'acrossai-core-abilities' ) );
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		$args = array();
+		if ( isset( $input['name'] ) ) {
+			$args['menu-name'] = sanitize_text_field( (string) $input['name'] );
+		}
+		if ( isset( $input['slug'] ) ) {
+			$args['menu-slug'] = sanitize_title( (string) $input['slug'] );
+		}
+		if ( isset( $input['description'] ) ) {
+			$args['description'] = (string) $input['description'];
+		}
+
+		if ( ! empty( $args ) ) {
+			$result = wp_update_nav_menu_object( $id, wp_slash( $args ) );
+			if ( is_wp_error( $result ) ) {
+				return Menu_Formatter::error_from(
+					$result,
+					/* translators: %d: menu ID */
+					sprintf( __( 'Could not update menu #%d.', 'acrossai-core-abilities' ), $id )
+				);
+			}
+		}
+
+		if ( isset( $input['locations'] ) && is_array( $input['locations'] ) ) {
+			Menu_Formatter::set_menu_locations(
+				$id,
+				array_values( array_filter( array_map( 'sanitize_key', $input['locations'] ) ) )
 			);
 		}
 
+		$updated = wp_get_nav_menu_object( $id );
 		return array(
 			'success' => true,
-			'menu'    => (array) $response->get_data(),
+			'menu'    => $updated instanceof \WP_Term ? Menu_Formatter::menu_to_array( $updated ) : array(),
 			/* translators: %d: menu ID */
 			'message' => sprintf( __( 'Updated menu #%d.', 'acrossai-core-abilities' ), $id ),
 		);

@@ -18,7 +18,7 @@ class Create_Menu_Item extends Ability_Definition {
 				'sub_group_label'     => __( 'Menu Items', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -59,25 +59,81 @@ class Create_Menu_Item extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/menu-items' );
-		foreach ( array( 'title', 'type', 'object', 'object_id', 'url', 'parent', 'menu_order', 'menus', 'target', 'classes', 'description', 'xfn' ) as $field ) {
-			if ( isset( $input[ $field ] ) ) {
-				$request->set_param( $field, $input[ $field ] );
-			}
+		$title = (string) ( $input['title'] ?? '' );
+		if ( '' === $title ) {
+			return array( 'success' => false, 'message' => __( 'title is required.', 'acrossai-core-abilities' ) );
+		}
+		$menu_id = (int) ( $input['menus'] ?? 0 );
+		if ( $menu_id <= 0 ) {
+			return array( 'success' => false, 'message' => __( 'menus (the parent menu id) is required.', 'acrossai-core-abilities' ) );
+		}
+		if ( ! ( wp_get_nav_menu_object( $menu_id ) instanceof \WP_Term ) ) {
+			return array( 'success' => false, 'message' => __( 'Parent menu not found.', 'acrossai-core-abilities' ) );
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		$args = self::build_item_args( $title, $input );
+
+		$new_id = wp_update_nav_menu_item( $menu_id, 0, wp_slash( $args ) );
+		if ( is_wp_error( $new_id ) || 0 === $new_id ) {
+			return Menu_Formatter::error_from( $new_id, __( 'Could not create menu item.', 'acrossai-core-abilities' ) );
+		}
+
+		$post = get_post( (int) $new_id );
+		if ( ! ( $post instanceof \WP_Post ) ) {
+			return array( 'success' => false, 'message' => __( 'Menu item created but could not be retrieved.', 'acrossai-core-abilities' ) );
 		}
 
 		return array(
 			'success' => true,
-			'item'    => (array) $response->get_data(),
+			'item'    => Menu_Formatter::item_to_array( $post ),
 			'message' => __( 'Menu item created.', 'acrossai-core-abilities' ),
 		);
+	}
+
+	/**
+	 * Translate the public field names into the menu-item-* args
+	 * that wp_update_nav_menu_item expects.
+	 *
+	 * @param string               $title Item title.
+	 * @param array<string, mixed> $input Raw input.
+	 * @return array<string, mixed>
+	 */
+	public static function build_item_args( string $title, array $input ): array {
+		$args = array(
+			'menu-item-title'  => $title,
+			'menu-item-type'   => (string) ( $input['type'] ?? 'custom' ),
+			'menu-item-status' => 'publish',
+		);
+		if ( isset( $input['object'] ) ) {
+			$args['menu-item-object'] = sanitize_key( (string) $input['object'] );
+		}
+		if ( isset( $input['object_id'] ) ) {
+			$args['menu-item-object-id'] = (int) $input['object_id'];
+		}
+		if ( isset( $input['url'] ) ) {
+			$args['menu-item-url'] = esc_url_raw( (string) $input['url'] );
+		}
+		if ( isset( $input['parent'] ) ) {
+			$args['menu-item-parent-id'] = (int) $input['parent'];
+		}
+		if ( isset( $input['menu_order'] ) ) {
+			$args['menu-item-position'] = (int) $input['menu_order'];
+		}
+		if ( isset( $input['target'] ) ) {
+			$args['menu-item-target'] = '_blank' === $input['target'] ? '_blank' : '';
+		}
+		if ( isset( $input['classes'] ) && is_array( $input['classes'] ) ) {
+			$args['menu-item-classes'] = implode( ' ', array_map( 'sanitize_html_class', $input['classes'] ) );
+		}
+		if ( isset( $input['description'] ) ) {
+			$args['menu-item-description'] = (string) $input['description'];
+		}
+		if ( isset( $input['xfn'] ) && is_array( $input['xfn'] ) ) {
+			$args['menu-item-xfn'] = implode( ' ', array_map( 'sanitize_html_class', $input['xfn'] ) );
+		}
+		if ( isset( $input['attr_title'] ) ) {
+			$args['menu-item-attr-title'] = (string) $input['attr_title'];
+		}
+		return $args;
 	}
 }

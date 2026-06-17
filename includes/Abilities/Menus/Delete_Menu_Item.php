@@ -18,7 +18,7 @@ class Delete_Menu_Item extends Ability_Definition {
 				'sub_group_label'     => __( 'Menu Items', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -54,23 +54,27 @@ class Delete_Menu_Item extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'DELETE', '/wp/v2/menu-items/' . $id );
-		$request->set_param( 'force', true );
+		$post = get_post( $id );
+		if ( ! ( $post instanceof \WP_Post ) || 'nav_menu_item' !== $post->post_type ) {
+			return array( 'success' => false, 'message' => __( 'Menu item not found.', 'acrossai-core-abilities' ) );
+		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		$snapshot = Menu_Formatter::item_to_array( $post );
+
+		// Menu items don't support trash — REST always force-deletes, so we do too.
+		$result = wp_delete_post( $id, true );
+		if ( ! $result ) {
+			return Menu_Formatter::error_from(
+				false,
+				/* translators: %d: menu item ID */
+				sprintf( __( 'Could not delete menu item #%d.', 'acrossai-core-abilities' ), $id )
 			);
 		}
 
-		$data = (array) $response->get_data();
-
 		return array(
 			'success' => true,
-			'deleted' => ! empty( $data['deleted'] ),
-			'item'    => isset( $data['previous'] ) ? (array) $data['previous'] : array(),
+			'deleted' => true,
+			'item'    => $snapshot,
 			/* translators: %d: menu item ID */
 			'message' => sprintf( __( 'Deleted menu item #%d.', 'acrossai-core-abilities' ), $id ),
 		);

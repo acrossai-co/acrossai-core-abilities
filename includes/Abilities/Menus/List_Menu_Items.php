@@ -18,7 +18,7 @@ class List_Menu_Items extends Ability_Definition {
 				'sub_group_label'     => __( 'Menu Items', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -50,26 +50,48 @@ class List_Menu_Items extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$request = new \WP_REST_Request( 'GET', '/wp/v2/menu-items' );
-		$request->set_param( 'context', 'edit' );
-		$request->set_param( 'page', max( 1, (int) ( $input['page'] ?? 1 ) ) );
-		$request->set_param( 'per_page', min( 100, max( 1, (int) ( $input['per_page'] ?? 25 ) ) ) );
+		$page     = max( 1, (int) ( $input['page'] ?? 1 ) );
+		$per_page = min( 100, max( 1, (int) ( $input['per_page'] ?? 25 ) ) );
+
 		if ( ! empty( $input['menus'] ) ) {
-			$request->set_param( 'menus', (int) $input['menus'] );
+			// Scoped to a single menu — wp_get_nav_menu_items handles ordering
+			// (`update_post_term_cache` off saves a few queries).
+			$menu_id = (int) $input['menus'];
+			$all     = wp_get_nav_menu_items( $menu_id, array( 'update_post_term_cache' => false ) );
+			if ( ! is_array( $all ) ) {
+				$all = array();
+			}
+		} else {
+			$query = new \WP_Query(
+				array(
+					'post_type'      => 'nav_menu_item',
+					'post_status'    => 'publish',
+					'posts_per_page' => -1,
+					'orderby'        => 'menu_order',
+					'order'          => 'ASC',
+				)
+			);
+			$all   = $query->posts;
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array( 'success' => false, 'message' => $response->as_error()->get_error_message() );
-		}
+		$total = count( $all );
+		$slice = array_slice( $all, ( $page - 1 ) * $per_page, $per_page );
 
-		$data    = (array) $response->get_data();
-		$headers = $response->get_headers();
-		$total   = isset( $headers['X-WP-Total'] ) ? (int) $headers['X-WP-Total'] : count( $data );
+		$formatted = array_map(
+			array( Menu_Formatter::class, 'item_to_array' ),
+			array_values(
+				array_filter(
+					$slice,
+					static function ( $p ): bool {
+						return $p instanceof \WP_Post;
+					}
+				)
+			)
+		);
 
 		return array(
 			'success' => true,
-			'items'   => array_values( $data ),
+			'items'   => $formatted,
 			'total'   => $total,
 		);
 	}

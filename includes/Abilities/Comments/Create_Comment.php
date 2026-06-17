@@ -18,7 +18,7 @@ class Create_Comment extends Ability_Definition {
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'moderate_comments' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -55,25 +55,69 @@ class Create_Comment extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/comments' );
-		foreach ( array( 'post', 'content', 'author', 'author_name', 'author_email', 'author_url', 'parent', 'status' ) as $field ) {
-			if ( isset( $input[ $field ] ) ) {
-				$request->set_param( $field, $input[ $field ] );
-			}
+		$post_id = isset( $input['post'] ) ? (int) $input['post'] : 0;
+		$content = isset( $input['content'] ) ? (string) $input['content'] : '';
+		if ( $post_id <= 0 || '' === $content ) {
+			return array( 'success' => false, 'message' => __( 'post and content are required.', 'acrossai-core-abilities' ) );
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		$data = array(
+			'comment_post_ID'  => $post_id,
+			'comment_content'  => $content,
+			'comment_parent'   => isset( $input['parent'] ) ? (int) $input['parent'] : 0,
+			'comment_approved' => self::map_input_status( isset( $input['status'] ) ? (string) $input['status'] : 'approved' ),
+		);
+
+		if ( isset( $input['author'] ) ) {
+			$data['user_id'] = (int) $input['author'];
+		}
+		if ( isset( $input['author_name'] ) ) {
+			$data['comment_author'] = (string) $input['author_name'];
+		}
+		if ( isset( $input['author_email'] ) ) {
+			$data['comment_author_email'] = (string) $input['author_email'];
+		}
+		if ( isset( $input['author_url'] ) ) {
+			$data['comment_author_url'] = (string) $input['author_url'];
+		}
+
+		$new_id = wp_insert_comment( wp_slash( $data ) );
+		if ( ! $new_id ) {
+			return Comment_Formatter::error_from( false, __( 'Could not create comment.', 'acrossai-core-abilities' ) );
+		}
+
+		$comment = get_comment( (int) $new_id );
+		if ( null === $comment ) {
+			return array( 'success' => false, 'message' => __( 'Comment created but could not be retrieved.', 'acrossai-core-abilities' ) );
 		}
 
 		return array(
 			'success' => true,
-			'comment' => (array) $response->get_data(),
+			'comment' => Comment_Formatter::to_array( $comment ),
 			'message' => __( 'Comment created.', 'acrossai-core-abilities' ),
 		);
+	}
+
+	/**
+	 * Translate the public status vocabulary into the raw `comment_approved` value
+	 * that wp_insert_comment expects (1 / 0 / 'spam'). Defaults to approved.
+	 */
+	private static function map_input_status( string $status ): string {
+		switch ( $status ) {
+			case 'hold':
+			case 'unapproved':
+			case '0':
+				return '0';
+			case 'spam':
+				return 'spam';
+			case 'trash':
+				return 'trash';
+			case '':
+			case 'approved':
+			case 'approve':
+			case '1':
+			default:
+				return '1';
+		}
 	}
 }

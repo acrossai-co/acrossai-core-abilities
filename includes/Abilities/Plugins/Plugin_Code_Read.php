@@ -69,13 +69,13 @@ class Plugin_Code_Read extends Ability_Definition {
 		$plugins_dir = rtrim( WP_PLUGIN_DIR, '/' );
 		$plugin_path = realpath( $plugins_dir . '/' . $slug );
 
-		if ( false === $plugin_path || 0 !== strpos( $plugin_path, $plugins_dir ) || ! is_dir( $plugin_path ) ) {
+		if ( false === $plugin_path || 0 !== strpos( $plugin_path, $plugins_dir . '/' ) || ! is_dir( $plugin_path ) ) {
 			return array( 'success' => false, 'message' => __( 'Plugin directory not found.', 'acrossai-core-abilities' ) );
 		}
 
 		$abs_file = realpath( $plugin_path . '/' . ltrim( $rel_file, '/' ) );
 
-		if ( false === $abs_file || 0 !== strpos( $abs_file, $plugin_path ) || ! is_file( $abs_file ) ) {
+		if ( false === $abs_file || 0 !== strpos( $abs_file, $plugin_path . '/' ) || ! is_file( $abs_file ) ) {
 			return array( 'success' => false, 'message' => __( 'File not found within plugin directory.', 'acrossai-core-abilities' ) );
 		}
 

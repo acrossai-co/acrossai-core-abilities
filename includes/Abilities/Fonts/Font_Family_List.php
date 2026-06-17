@@ -10,6 +10,8 @@ defined( 'ABSPATH' ) || exit;
  *
  * Delegates to the core WP_REST_Font_Families_Controller via rest_do_request()
  * so capability, schema, and pagination behaviour stay in lockstep with core.
+ * WordPress core does not expose dedicated wp_*_font_family functions —
+ * everything goes through the REST controller, so this ability does too.
  */
 class Font_Family_List extends Ability_Definition {
 
@@ -24,7 +26,7 @@ class Font_Family_List extends Ability_Definition {
 				'sub_group_label'     => __( 'Font Families', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',

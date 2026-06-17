@@ -18,7 +18,7 @@ class Update_Term extends Ability_Definition {
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'manage_categories' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -53,40 +53,51 @@ class Update_Term extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$base = Taxonomy_Routes::rest_base( sanitize_key( (string) ( $input['taxonomy'] ?? '' ) ) );
-		if ( is_wp_error( $base ) ) {
-			return array( 'success' => false, 'message' => $base->get_error_message() );
+		$taxonomy = sanitize_key( (string) ( $input['taxonomy'] ?? '' ) );
+		$check    = Taxonomy_Routes::rest_base( $taxonomy );
+		if ( is_wp_error( $check ) ) {
+			return array( 'success' => false, 'message' => $check->get_error_message() );
 		}
 		$id = (int) ( $input['id'] ?? 0 );
 		if ( $id <= 0 ) {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/' . $base . '/' . $id );
-		if ( isset( $input['name'] ) ) {
-			$request->set_param( 'name', sanitize_text_field( (string) $input['name'] ) );
-		}
-		if ( isset( $input['slug'] ) ) {
-			$request->set_param( 'slug', sanitize_title( (string) $input['slug'] ) );
-		}
-		if ( isset( $input['description'] ) ) {
-			$request->set_param( 'description', (string) $input['description'] );
-		}
-		if ( isset( $input['parent'] ) ) {
-			$request->set_param( 'parent', (int) $input['parent'] );
+		if ( ! ( get_term( $id, $taxonomy ) instanceof \WP_Term ) ) {
+			return array( 'success' => false, 'message' => __( 'Term not found.', 'acrossai-core-abilities' ) );
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		$args = array();
+		if ( isset( $input['name'] ) ) {
+			$args['name'] = sanitize_text_field( (string) $input['name'] );
+		}
+		if ( isset( $input['slug'] ) ) {
+			$args['slug'] = sanitize_title( (string) $input['slug'] );
+		}
+		if ( isset( $input['description'] ) ) {
+			$args['description'] = (string) $input['description'];
+		}
+		if ( isset( $input['parent'] ) ) {
+			$args['parent'] = (int) $input['parent'];
+		}
+
+		if ( empty( $args ) ) {
+			return array( 'success' => false, 'message' => __( 'At least one field to update is required.', 'acrossai-core-abilities' ) );
+		}
+
+		$result = wp_update_term( $id, $taxonomy, wp_slash( $args ) );
+		if ( is_wp_error( $result ) ) {
+			return Term_Formatter::error_from(
+				$result,
+				/* translators: %d: term ID */
+				sprintf( __( 'Could not update term #%d.', 'acrossai-core-abilities' ), $id )
 			);
 		}
 
+		$term = get_term( $id, $taxonomy );
 		return array(
 			'success' => true,
-			'term'    => (array) $response->get_data(),
+			'term'    => $term instanceof \WP_Term ? Term_Formatter::term_to_array( $term ) : array(),
 			/* translators: %d: term ID */
 			'message' => sprintf( __( 'Updated term #%d.', 'acrossai-core-abilities' ), $id ),
 		);

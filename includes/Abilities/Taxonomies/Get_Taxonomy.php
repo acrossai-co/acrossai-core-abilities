@@ -18,7 +18,7 @@ class Get_Taxonomy extends Ability_Definition {
 				'sub_group_label'     => __( 'Taxonomies', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'manage_categories' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -56,18 +56,19 @@ class Get_Taxonomy extends Ability_Definition {
 			);
 		}
 
-		$request  = new \WP_REST_Request( 'GET', '/wp/v2/taxonomies/' . $tax );
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		$check = Taxonomy_Routes::rest_base( $tax );
+		if ( is_wp_error( $check ) ) {
+			return array( 'success' => false, 'message' => $check->get_error_message() );
+		}
+
+		$obj = get_taxonomy( $tax );
+		if ( ! ( $obj instanceof \WP_Taxonomy ) ) {
+			return array( 'success' => false, 'message' => __( 'Taxonomy not found.', 'acrossai-core-abilities' ) );
 		}
 
 		return array(
 			'success'  => true,
-			'taxonomy' => (array) $response->get_data(),
+			'taxonomy' => Term_Formatter::taxonomy_to_array( $obj ),
 		);
 	}
 }

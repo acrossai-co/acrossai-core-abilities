@@ -18,7 +18,7 @@ class Delete_Comment extends Ability_Definition {
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'moderate_comments' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -56,23 +56,26 @@ class Delete_Comment extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'DELETE', '/wp/v2/comments/' . $id );
-		$request->set_param( 'force', $force );
+		$comment = get_comment( $id );
+		if ( null === $comment ) {
+			return array( 'success' => false, 'message' => __( 'Comment not found.', 'acrossai-core-abilities' ) );
+		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		$snapshot = Comment_Formatter::to_array( $comment );
+
+		$deleted = wp_delete_comment( $id, $force );
+		if ( ! $deleted ) {
+			return Comment_Formatter::error_from(
+				false,
+				/* translators: %d: comment ID */
+				sprintf( __( 'Could not delete comment #%d.', 'acrossai-core-abilities' ), $id )
 			);
 		}
 
-		$data = (array) $response->get_data();
-
 		return array(
 			'success' => true,
-			'deleted' => ! empty( $data['deleted'] ),
-			'comment' => isset( $data['previous'] ) ? (array) $data['previous'] : $data,
+			'deleted' => true,
+			'comment' => $snapshot,
 			'message' => $force
 				/* translators: %d: comment ID */
 				? sprintf( __( 'Permanently deleted comment #%d.', 'acrossai-core-abilities' ), $id )

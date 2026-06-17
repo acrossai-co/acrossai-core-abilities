@@ -23,7 +23,7 @@ class Create_Cpt_Item extends Ability_Definition {
 				'sub_group_label'     => __( 'Custom Post Types', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_posts' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',

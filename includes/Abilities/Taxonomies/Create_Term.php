@@ -18,7 +18,7 @@ class Create_Term extends Ability_Definition {
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'manage_categories' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -52,9 +52,10 @@ class Create_Term extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$base = Taxonomy_Routes::rest_base( sanitize_key( (string) ( $input['taxonomy'] ?? '' ) ) );
-		if ( is_wp_error( $base ) ) {
-			return array( 'success' => false, 'message' => $base->get_error_message() );
+		$taxonomy = sanitize_key( (string) ( $input['taxonomy'] ?? '' ) );
+		$check    = Taxonomy_Routes::rest_base( $taxonomy );
+		if ( is_wp_error( $check ) ) {
+			return array( 'success' => false, 'message' => $check->get_error_message() );
 		}
 
 		$name = sanitize_text_field( (string) ( $input['name'] ?? '' ) );
@@ -62,31 +63,32 @@ class Create_Term extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'name is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/' . $base );
-		$request->set_param( 'name', $name );
+		$args = array();
 		if ( ! empty( $input['slug'] ) ) {
-			$request->set_param( 'slug', sanitize_title( (string) $input['slug'] ) );
+			$args['slug'] = sanitize_title( (string) $input['slug'] );
 		}
 		if ( isset( $input['description'] ) ) {
-			$request->set_param( 'description', (string) $input['description'] );
+			$args['description'] = (string) $input['description'];
 		}
 		if ( isset( $input['parent'] ) ) {
-			$request->set_param( 'parent', (int) $input['parent'] );
+			$args['parent'] = (int) $input['parent'];
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		$result = wp_insert_term( wp_slash( $name ), $taxonomy, wp_slash( $args ) );
+		if ( is_wp_error( $result ) ) {
+			return Term_Formatter::error_from( $result, __( 'Could not create term.', 'acrossai-core-abilities' ) );
+		}
+
+		$term = get_term( (int) $result['term_id'], $taxonomy );
+		if ( ! ( $term instanceof \WP_Term ) ) {
+			return array( 'success' => false, 'message' => __( 'Term created but could not be retrieved.', 'acrossai-core-abilities' ) );
 		}
 
 		return array(
 			'success' => true,
-			'term'    => (array) $response->get_data(),
+			'term'    => Term_Formatter::term_to_array( $term ),
 			/* translators: 1: name, 2: taxonomy */
-			'message' => sprintf( __( 'Created term "%1$s" in "%2$s".', 'acrossai-core-abilities' ), $name, $input['taxonomy'] ?? '' ),
+			'message' => sprintf( __( 'Created term "%1$s" in "%2$s".', 'acrossai-core-abilities' ), $name, $taxonomy ),
 		);
 	}
 }

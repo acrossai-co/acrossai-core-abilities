@@ -18,7 +18,7 @@ class List_Comments extends Ability_Definition {
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'moderate_comments' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -52,33 +52,50 @@ class List_Comments extends Ability_Definition {
 	}
 
 	public function execute( array $input = array() ): array {
-		$request = new \WP_REST_Request( 'GET', '/wp/v2/comments' );
-		$request->set_param( 'context', 'edit' );
-		$request->set_param( 'page', max( 1, (int) ( $input['page'] ?? 1 ) ) );
-		$request->set_param( 'per_page', min( 100, max( 1, (int) ( $input['per_page'] ?? 10 ) ) ) );
+		$page     = max( 1, (int) ( $input['page'] ?? 1 ) );
+		$per_page = min( 100, max( 1, (int) ( $input['per_page'] ?? 10 ) ) );
+
+		$filters = array();
 		if ( ! empty( $input['search'] ) ) {
-			$request->set_param( 'search', sanitize_text_field( (string) $input['search'] ) );
+			$filters['search'] = sanitize_text_field( (string) $input['search'] );
 		}
 		if ( ! empty( $input['post'] ) ) {
-			$request->set_param( 'post', (int) $input['post'] );
+			$filters['post_id'] = (int) $input['post'];
 		}
 		if ( ! empty( $input['status'] ) ) {
-			$request->set_param( 'status', sanitize_key( (string) $input['status'] ) );
+			$filters['status'] = self::map_status_filter( (string) $input['status'] );
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array( 'success' => false, 'message' => $response->as_error()->get_error_message() );
-		}
+		$items = get_comments(
+			array_merge(
+				$filters,
+				array(
+					'number'  => $per_page,
+					'offset'  => ( $page - 1 ) * $per_page,
+					'orderby' => 'comment_date_gmt',
+					'order'   => 'DESC',
+				)
+			)
+		);
 
-		$data    = (array) $response->get_data();
-		$headers = $response->get_headers();
-		$total   = isset( $headers['X-WP-Total'] ) ? (int) $headers['X-WP-Total'] : count( $data );
+		$total = (int) get_comments( array_merge( $filters, array( 'count' => true ) ) );
 
 		return array(
 			'success'  => true,
-			'comments' => array_values( $data ),
+			'comments' => array_values( array_map( array( Comment_Formatter::class, 'to_array' ), $items ) ),
 			'total'    => $total,
 		);
+	}
+
+	/**
+	 * Translate the public status vocabulary into what WP_Comment_Query expects.
+	 * REST uses `approved`, core query uses `approve`; everything else passes through.
+	 */
+	private static function map_status_filter( string $status ): string {
+		$normalized = sanitize_key( $status );
+		if ( 'approved' === $normalized ) {
+			return 'approve';
+		}
+		return $normalized;
 	}
 }

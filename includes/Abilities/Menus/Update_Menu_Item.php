@@ -18,7 +18,7 @@ class Update_Menu_Item extends Ability_Definition {
 				'sub_group_label'     => __( 'Menu Items', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'edit_theme_options' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -62,24 +62,58 @@ class Update_Menu_Item extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/menu-items/' . $id );
-		foreach ( array( 'title', 'url', 'parent', 'menu_order', 'menus', 'target', 'classes', 'description', 'xfn' ) as $field ) {
-			if ( isset( $input[ $field ] ) ) {
-				$request->set_param( $field, $input[ $field ] );
-			}
+		$post = get_post( $id );
+		if ( ! ( $post instanceof \WP_Post ) || 'nav_menu_item' !== $post->post_type ) {
+			return array( 'success' => false, 'message' => __( 'Menu item not found.', 'acrossai-core-abilities' ) );
 		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		// Determine the containing menu — either the new one passed in or the
+		// item's current nav_menu term. wp_update_nav_menu_item REQUIRES a menu id.
+		$menu_id = (int) ( $input['menus'] ?? 0 );
+		if ( $menu_id <= 0 ) {
+			$terms = get_the_terms( $post, 'nav_menu' );
+			if ( is_array( $terms ) && ! empty( $terms ) ) {
+				$first   = array_shift( $terms );
+				$menu_id = $first instanceof \WP_Term ? (int) $first->term_id : 0;
+			}
+		}
+		if ( $menu_id <= 0 ) {
+			return array( 'success' => false, 'message' => __( 'Containing menu could not be determined.', 'acrossai-core-abilities' ) );
+		}
+
+		// Seed args from current state so omitted fields don't get wiped, then overlay $input.
+		$current = wp_setup_nav_menu_item( $post );
+		$seed    = array(
+			'title'       => isset( $current->title ) ? (string) $current->title : '',
+			'type'        => isset( $current->type ) ? (string) $current->type : 'custom',
+			'object'      => isset( $current->object ) ? (string) $current->object : '',
+			'object_id'   => isset( $current->object_id ) ? (int) $current->object_id : 0,
+			'url'         => isset( $current->url ) ? (string) $current->url : '',
+			'parent'      => isset( $current->menu_item_parent ) ? (int) $current->menu_item_parent : 0,
+			'menu_order'  => isset( $current->menu_order ) ? (int) $current->menu_order : 0,
+			'target'      => isset( $current->target ) ? (string) $current->target : '',
+			'description' => isset( $current->description ) ? (string) $current->description : '',
+			'attr_title'  => isset( $current->attr_title ) ? (string) $current->attr_title : '',
+			'classes'     => isset( $current->classes ) ? (array) $current->classes : array(),
+			'xfn'         => isset( $current->xfn ) ? explode( ' ', (string) $current->xfn ) : array(),
+		);
+		$merged  = array_merge( $seed, $input );
+
+		$args = Create_Menu_Item::build_item_args( (string) $merged['title'], $merged );
+
+		$result = wp_update_nav_menu_item( $menu_id, $id, wp_slash( $args ) );
+		if ( is_wp_error( $result ) || 0 === $result ) {
+			return Menu_Formatter::error_from(
+				$result,
+				/* translators: %d: menu item ID */
+				sprintf( __( 'Could not update menu item #%d.', 'acrossai-core-abilities' ), $id )
 			);
 		}
 
+		$updated = get_post( $id );
 		return array(
 			'success' => true,
-			'item'    => (array) $response->get_data(),
+			'item'    => $updated instanceof \WP_Post ? Menu_Formatter::item_to_array( $updated ) : array(),
 			/* translators: %d: menu item ID */
 			'message' => sprintf( __( 'Updated menu item #%d.', 'acrossai-core-abilities' ), $id ),
 		);

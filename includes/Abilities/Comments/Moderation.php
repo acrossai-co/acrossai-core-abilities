@@ -4,8 +4,9 @@ namespace Acrossai_Core_Abilities\Includes\Abilities\Comments;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Shared helper for Approve / Unapprove / Mark-as-Spam abilities — all three
- * dispatch the same POST /wp/v2/comments/{id} with a different status value.
+ * Shared helper for Approve / Unapprove / Mark-as-Spam abilities — translates
+ * the REST-style status vocabulary (`approved`, `hold`, `spam`, `trash`) into
+ * the matching core call and returns a formatted comment.
  */
 final class Moderation {
 
@@ -14,20 +15,50 @@ final class Moderation {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request = new \WP_REST_Request( 'POST', '/wp/v2/comments/' . $id );
-		$request->set_param( 'status', $status );
+		$comment = get_comment( $id );
+		if ( null === $comment ) {
+			return array( 'success' => false, 'message' => __( 'Comment not found.', 'acrossai-core-abilities' ) );
+		}
 
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
+		switch ( $status ) {
+			case 'approved':
+			case 'approve':
+			case '1':
+				$result = wp_set_comment_status( $id, 'approve', true );
+				break;
+			case 'hold':
+			case 'unapproved':
+			case '0':
+				$result = wp_set_comment_status( $id, 'hold', true );
+				break;
+			case 'spam':
+				$result = wp_spam_comment( $id );
+				break;
+			case 'trash':
+				$result = wp_trash_comment( $id );
+				break;
+			default:
+				return array(
+					'success' => false,
+					/* translators: %s: status value */
+					'message' => sprintf( __( 'Unsupported status "%s".', 'acrossai-core-abilities' ), $status ),
+				);
+		}
+
+		if ( true !== $result ) {
+			return Comment_Formatter::error_from(
+				$result,
+				/* translators: 1: comment ID, 2: status */
+				sprintf( __( 'Could not set comment #%1$d to "%2$s".', 'acrossai-core-abilities' ), $id, $status )
 			);
 		}
 
+		$updated = get_comment( $id );
+		$payload = null !== $updated ? Comment_Formatter::to_array( $updated ) : array();
+
 		return array(
 			'success' => true,
-			'comment' => (array) $response->get_data(),
+			'comment' => $payload,
 			/* translators: 1: comment ID, 2: status */
 			'message' => sprintf( __( 'Comment #%1$d set to "%2$s".', 'acrossai-core-abilities' ), $id, $status ),
 		);

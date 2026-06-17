@@ -14,6 +14,7 @@ use Acrossai_Core_Abilities\Includes\Abilities\Menus;
 use Acrossai_Core_Abilities\Includes\Abilities\Options as Options_Abilities;
 use Acrossai_Core_Abilities\Includes\Abilities\Plugins;
 use Acrossai_Core_Abilities\Includes\Abilities\Settings;
+use Acrossai_Core_Abilities\Includes\Abilities\SiteHealth;
 use Acrossai_Core_Abilities\Includes\Abilities\Taxonomies;
 use Acrossai_Core_Abilities\Includes\Abilities\Themes;
 use Acrossai_Core_Abilities\Includes\Abilities\Users;
@@ -293,6 +294,12 @@ final class Main {
 			'register'
 		);
 
+		$this->loader->add_action(
+			'wp_abilities_api_categories_init',
+			SiteHealth\Category_Registrar::instance(),
+			'register'
+		);
+
 		Cron_Helpers::register_filter();
 
 		add_action(
@@ -469,6 +476,8 @@ final class Main {
 				new Cron\Cron_Delete();
 				new Cron\Cron_Delete_All_By_Hook();
 				new Cron\Cron_Delete_Schedule();
+				new SiteHealth\Site_Health_Status();
+				new SiteHealth\Site_Health_Info();
 			},
 			20
 		);

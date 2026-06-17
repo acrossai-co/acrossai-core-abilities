@@ -18,7 +18,7 @@ class Get_Media extends Ability_Definition {
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {
-					return current_user_can( 'upload_files' );
+					return current_user_can( 'manage_options' );
 				},
 				'input_schema'        => array(
 					'type'                 => 'object',
@@ -53,18 +53,14 @@ class Get_Media extends Ability_Definition {
 			return array( 'success' => false, 'message' => __( 'A valid id is required.', 'acrossai-core-abilities' ) );
 		}
 
-		$request  = new \WP_REST_Request( 'GET', '/wp/v2/media/' . $id );
-		$response = rest_do_request( $request );
-		if ( $response->is_error() ) {
-			return array(
-				'success' => false,
-				'message' => $response->as_error()->get_error_message(),
-			);
+		$post = get_post( $id );
+		if ( ! ( $post instanceof \WP_Post ) || 'attachment' !== $post->post_type ) {
+			return array( 'success' => false, 'message' => __( 'Attachment not found.', 'acrossai-core-abilities' ) );
 		}
 
 		return array(
 			'success' => true,
-			'media'   => (array) $response->get_data(),
+			'media'   => Media_Formatter::to_array( $post ),
 		);
 	}
 }
