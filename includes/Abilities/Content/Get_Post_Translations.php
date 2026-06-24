@@ -10,7 +10,7 @@ class Get_Post_Translations extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/get-post-translations',
+			'name' => 'acrossai-core-abilities/get-post-translations',
 			'args' => array(
 				'label'               => __( 'Get Post Translations', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return the translations of a post (language code → post ID). Detects Polylang first, then WPML; errors if neither is active.', 'acrossai-core-abilities' ),

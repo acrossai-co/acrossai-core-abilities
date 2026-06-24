@@ -12,7 +12,7 @@ class Create_Page extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/create-page',
+			'name' => 'acrossai-core-abilities/create-page',
 			'args' => array(
 				'label'               => __( 'Create Page', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a page via wp_insert_post() (post_type=page). Supports parent and menu_order for hierarchical layouts.', 'acrossai-core-abilities' ),

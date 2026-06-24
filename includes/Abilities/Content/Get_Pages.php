@@ -13,7 +13,7 @@ class Get_Pages extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/get-pages',
+			'name' => 'acrossai-core-abilities/get-pages',
 			'args' => array(
 				'label'               => __( 'Get Pages', 'acrossai-core-abilities' ),
 				'description'         => __( 'List pages via get_pages(). Supports parent / child_of filters and sort_column / sort_order.', 'acrossai-core-abilities' ),

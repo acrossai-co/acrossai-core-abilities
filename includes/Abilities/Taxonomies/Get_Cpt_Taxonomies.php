@@ -12,7 +12,7 @@ class Get_Cpt_Taxonomies extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/get-cpt-taxonomies',
+			'name' => 'acrossai-core-abilities/get-cpt-taxonomies',
 			'args' => array(
 				'label'               => __( 'Get CPT Taxonomies', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return the taxonomies attached to a given post type via get_object_taxonomies( $post_type, "objects" ).', 'acrossai-core-abilities' ),

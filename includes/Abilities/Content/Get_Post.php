@@ -12,7 +12,7 @@ class Get_Post extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/get-post',
+			'name' => 'acrossai-core-abilities/get-post',
 			'args' => array(
 				'label'               => __( 'Get Post', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a post (any post type) by ID via get_post().', 'acrossai-core-abilities' ),

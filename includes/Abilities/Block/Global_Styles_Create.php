@@ -361,7 +361,6 @@ class Global_Styles_Create extends Ability_Definition {
 		return array(
 			'success' => false,
 			'message' => $err->get_error_message(),
-			'code'    => $err->get_error_code(),
 		);
 	}
 }

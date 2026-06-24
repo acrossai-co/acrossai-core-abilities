@@ -14,7 +14,7 @@ class List_Post_Types extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/list-post-types',
+			'name' => 'acrossai-core-abilities/list-post-types',
 			'args' => array(
 				'label'               => __( 'List Post Types', 'acrossai-core-abilities' ),
 				'description'         => __( 'List registered post types via get_post_types( objects ). Filterable by public/show_in_rest/hierarchical flags.', 'acrossai-core-abilities' ),

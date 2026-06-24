@@ -9,7 +9,7 @@ class Get_Page extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/get-page',
+			'name' => 'acrossai-core-abilities/get-page',
 			'args' => array(
 				'label'               => __( 'Get Page', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a single page by ID via get_post(); errors if the post is not of type "page".', 'acrossai-core-abilities' ),

@@ -13,7 +13,7 @@ class Get_Posts extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/get-posts',
+			'name' => 'acrossai-core-abilities/get-posts',
 			'args' => array(
 				'label'               => __( 'Get Posts', 'acrossai-core-abilities' ),
 				'description'         => __( 'List posts of any post type via WP_Query — supports search, pagination, status filter, ordering, and a simple meta key/value filter.', 'acrossai-core-abilities' ),

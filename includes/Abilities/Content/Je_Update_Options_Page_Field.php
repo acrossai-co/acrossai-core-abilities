@@ -10,7 +10,7 @@ class Je_Update_Options_Page_Field extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/je-update-options-page-field',
+			'name' => 'acrossai-core-abilities/je-update-options-page-field',
 			'args' => array(
 				'label'               => __( 'Update Options Page Field', 'acrossai-core-abilities' ),
 				'description'         => __( 'Write a single field value into a Jet Engine options page. The field value is stored inside the page\'s wp_options row.', 'acrossai-core-abilities' ),

@@ -10,7 +10,7 @@ class Je_List_Options_Pages extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/je-list-options-pages',
+			'name' => 'acrossai-core-abilities/je-list-options-pages',
 			'args' => array(
 				'label'               => __( 'List Options Pages', 'acrossai-core-abilities' ),
 				'description'         => __( 'List Jet Engine options pages (slug, name, option key, fields). Requires Jet Engine to be active.', 'acrossai-core-abilities' ),

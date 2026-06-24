@@ -13,7 +13,7 @@ class Update_Post extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/update-post',
+			'name' => 'acrossai-core-abilities/update-post',
 			'args' => array(
 				'label'               => __( 'Update Post', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update an existing post (any post type) via wp_update_post(). Only the supplied fields are changed.', 'acrossai-core-abilities' ),

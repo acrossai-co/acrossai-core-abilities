@@ -12,7 +12,7 @@ class Update_Post_Meta extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/update-post-meta',
+			'name' => 'acrossai-core-abilities/update-post-meta',
 			'args' => array(
 				'label'               => __( 'Update Post Meta', 'acrossai-core-abilities' ),
 				'description'         => __( 'Set a post meta value via update_post_meta(). If the meta is registered via register_meta() and protected, the request will be rejected.', 'acrossai-core-abilities' ),

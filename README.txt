@@ -75,7 +75,7 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 = 0.0.6 =
 * New ability category: Fonts — Font Family + Font Face CRUD via the core Font Library REST endpoints (8 abilities).
-* New ability category: Content — Posts, Pages, custom post types, Multilanguage (Polylang + WPML), and Jet Engine Options Pages (23 abilities, `ewpa/` + `je-` prefixes).
+* New ability category: Content — Posts, Pages, custom post types, Multilanguage (Polylang + WPML), and Jet Engine Options Pages (23 abilities, `acrossai-core-abilities/` + `je-` prefixes).
 * New ability category: Taxonomies — taxonomy + term CRUD across any taxonomy, plus per-post term assignment (9 abilities).
 * New ability category: Media — Media Library CRUD + meta access (7 abilities).
 * New ability category: Comments — CRUD, moderation (approve / hold / spam), and meta (10 abilities).

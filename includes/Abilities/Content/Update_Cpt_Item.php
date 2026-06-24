@@ -9,7 +9,7 @@ class Update_Cpt_Item extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/update-cpt-item',
+			'name' => 'acrossai-core-abilities/update-cpt-item',
 			'args' => array(
 				'label'               => __( 'Update CPT Item', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update a custom post type record via wp_update_post(). post_type is validated against the post; only supplied fields are touched.', 'acrossai-core-abilities' ),

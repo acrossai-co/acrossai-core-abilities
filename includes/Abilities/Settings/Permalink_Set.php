@@ -100,7 +100,6 @@ class Permalink_Set extends Ability_Definition {
 			return array(
 				'success' => false,
 				'message' => $valid->get_error_message(),
-				'code'    => $valid->get_error_code(),
 			);
 		}
 

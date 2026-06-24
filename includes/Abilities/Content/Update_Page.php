@@ -9,7 +9,7 @@ class Update_Page extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/update-page',
+			'name' => 'acrossai-core-abilities/update-page',
 			'args' => array(
 				'label'               => __( 'Update Page', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update an existing page (post_type=page) via wp_update_post(). Only the supplied fields are changed.', 'acrossai-core-abilities' ),

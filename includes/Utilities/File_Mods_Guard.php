@@ -56,7 +56,11 @@ final class File_Mods_Guard {
 	 * Convenience for ability classes — returns a ready-made failure response
 	 * when file mods are blocked, or null when the caller may proceed.
 	 *
-	 * @return array{success: false, message: string, code: string}|null
+	 * Returns the standard {success, message} envelope used everywhere else in
+	 * the plugin; the WP_Error code is intentionally omitted so this shape
+	 * stays valid under the abilities' `additionalProperties: false` schemas.
+	 *
+	 * @return array{success: false, message: string}|null
 	 */
 	public static function blocked_response( string $context = 'edit' ): ?array {
 		$check = self::check( $context );
@@ -66,7 +70,6 @@ final class File_Mods_Guard {
 		return array(
 			'success' => false,
 			'message' => $check->get_error_message(),
-			'code'    => $check->get_error_code(),
 		);
 	}
 

@@ -385,6 +385,13 @@ class Global_Styles_Update extends Ability_Definition {
 					sprintf( __( 'Invalid section. Allowed: %s.', 'acrossai-core-abilities' ), implode( ', ', Global_Styles_Db::valid_sections() ) )
 				);
 			}
+
+			// customCss is a single scalar string (theme.json: styles.css) — accept
+			// the raw CSS directly so callers don't have to hand-build the JSON wrapper.
+			if ( 'customCss' === $norm && isset( $input['data'] ) && is_string( $input['data'] ) ) {
+				return array( 'styles' => array( 'css' => (string) $input['data'] ) );
+			}
+
 			$data = $this->coerce_array( $input['data'] ?? null );
 			if ( is_wp_error( $data ) ) {
 				return $data;
@@ -430,7 +437,6 @@ class Global_Styles_Update extends Ability_Definition {
 		return array(
 			'success' => false,
 			'message' => $err->get_error_message(),
-			'code'    => $err->get_error_code(),
 		);
 	}
 }

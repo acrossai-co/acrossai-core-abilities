@@ -14,7 +14,7 @@ class Get_Post_Meta extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/get-post-meta',
+			'name' => 'acrossai-core-abilities/get-post-meta',
 			'args' => array(
 				'label'               => __( 'Get Post Meta', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch post meta via get_post_meta(). Pass key="" (the default) to retrieve every meta key for the post.', 'acrossai-core-abilities' ),

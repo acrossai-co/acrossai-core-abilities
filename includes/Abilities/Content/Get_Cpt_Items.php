@@ -9,7 +9,7 @@ class Get_Cpt_Items extends Ability_Definition {
 
 	protected function ability(): array {
 		return array(
-			'name' => 'ewpa/get-cpt-items',
+			'name' => 'acrossai-core-abilities/get-cpt-items',
 			'args' => array(
 				'label'               => __( 'Get CPT Items', 'acrossai-core-abilities' ),
 				'description'         => __( 'List custom post type records via WP_Query. post_type is required.', 'acrossai-core-abilities' ),

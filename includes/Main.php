@@ -165,7 +165,7 @@ final class Main {
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_URL', plugin_dir_url( \ACROSSAI_CORE_ABILITIES_PLUGIN_FILE ) );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME_SLUG', $this->plugin_name );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME', 'Acrossai Core Abilities' );
-		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.7' );
+		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.8' );
 	}
 
 	/**
@@ -320,6 +320,7 @@ final class Main {
 				new Settings\Site_Title_Update();
 				new Settings\Tagline_Get();
 				new Settings\Tagline_Update();
+				new Settings\Site_Logo_Update();
 				new Settings\Site_Icon_Get();
 				new Settings\Site_Icon_Update();
 				new Themes\Theme_Activate();
@@ -399,6 +400,7 @@ final class Main {
 				new Fonts\Font_Face_Delete();
 				new Content\Create_Post();
 				new Content\Get_Post();
+				new Content\Get_Post_Revisions();
 				new Content\Get_Posts();
 				new Content\Update_Post();
 				new Content\Delete_Post();
@@ -406,11 +408,13 @@ final class Main {
 				new Content\Update_Post_Meta();
 				new Content\Create_Page();
 				new Content\Get_Page();
+				new Content\Get_Page_Revisions();
 				new Content\Get_Pages();
 				new Content\Update_Page();
 				new Content\List_Post_Types();
 				new Content\Create_Cpt_Item();
 				new Content\Get_Cpt_Item();
+				new Content\Get_Cpt_Item_Revisions();
 				new Content\Get_Cpt_Items();
 				new Content\Update_Cpt_Item();
 				new Content\Delete_Cpt_Item();

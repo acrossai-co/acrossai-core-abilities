@@ -484,7 +484,6 @@ class Block_Style_Variations_Update extends Ability_Definition {
 		return array(
 			'success' => false,
 			'message' => $err->get_error_message(),
-			'code'    => $err->get_error_code(),
 		);
 	}
 }
