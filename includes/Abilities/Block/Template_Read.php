@@ -24,6 +24,7 @@ class Template_Read extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Read Block Template', 'acrossai-core-abilities' ),
 				'description'         => __( 'Reads a single block template by slug from the database, theme, or plugin. When the slug exists in multiple locations, returns "multiple_locations" with the candidate list — pick one with source / theme_type / plugin_slug.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'templates',
 				'sub_group_label'     => __( 'Templates', 'acrossai-core-abilities' ),

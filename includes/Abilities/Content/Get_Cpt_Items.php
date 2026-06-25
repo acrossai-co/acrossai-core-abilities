@@ -13,6 +13,7 @@ class Get_Cpt_Items extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get CPT Items', 'acrossai-core-abilities' ),
 				'description'         => __( 'List custom post type records via WP_Query. post_type is required.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'cpt',
 				'sub_group_label'     => __( 'Custom Post Types', 'acrossai-core-abilities' ),

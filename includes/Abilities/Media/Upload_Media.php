@@ -18,6 +18,7 @@ class Upload_Media extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Upload Media', 'acrossai-core-abilities' ),
 				'description'         => __( 'Sideload an attachment from a remote URL into the Media Library via media_handle_sideload(). Optionally attach it to a post.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-media',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

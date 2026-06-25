@@ -17,6 +17,7 @@ class Cron_Create extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Cron Job', 'acrossai-core-abilities' ),
 				'description'         => __( 'Schedule a WP-Cron event. Pass "schedule" (e.g. hourly, daily, or any registered name) for a recurring event; omit it for a one-off via wp_schedule_single_event().', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'write',
 				'sub_group_label'     => __( 'Write Cron Jobs', 'acrossai-core-abilities' ),

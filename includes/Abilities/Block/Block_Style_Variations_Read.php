@@ -23,6 +23,7 @@ class Block_Style_Variations_Read extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Read Block Style Variation', 'acrossai-core-abilities' ),
 				'description'         => __( 'Reads a Block Style Variation by slug. Defaults to the database; falls back to /styles file defaults. Pass "section" to return only colors / typography / spacing / layout / blockStyles.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'block-style-variations',
 				'sub_group_label'     => __( 'Block Style Variations', 'acrossai-core-abilities' ),

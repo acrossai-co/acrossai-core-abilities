@@ -13,6 +13,7 @@ class Update_Comment extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Comment', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update a comment via POST /wp/v2/comments/{id}. Only the supplied fields are touched.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-comments',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

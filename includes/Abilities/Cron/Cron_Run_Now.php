@@ -19,6 +19,7 @@ class Cron_Run_Now extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Run Cron Job Now', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fire a scheduled cron hook synchronously via do_action(). The hook must be present in the cron array — this is not a generic do_action() runner.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'write',
 				'sub_group_label'     => __( 'Write Cron Jobs', 'acrossai-core-abilities' ),

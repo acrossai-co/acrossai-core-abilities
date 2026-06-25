@@ -13,6 +13,7 @@ class Delete_Option extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Option', 'acrossai-core-abilities' ),
 				'description'         => __( 'Delete a wp_options row via delete_option(). Idempotent — succeeds even if the option does not exist.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-options',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

@@ -28,6 +28,7 @@ class Template_Part_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Block Template Parts', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists block template parts across the database (wp_template_part), the active theme\'s /parts/*.html, the parent theme, and installed plugin /parts dirs. Filter by source, theme_type, plugin_slug, area, or exact slug.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'template-parts',
 				'sub_group_label'     => __( 'Template Parts', 'acrossai-core-abilities' ),

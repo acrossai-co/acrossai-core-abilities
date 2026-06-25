@@ -20,6 +20,7 @@ class Font_Family_Delete extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Font Family', 'acrossai-core-abilities' ),
 				'description'         => __( 'Permanently delete a Font Library font family and all of its child font faces. Trash is not supported for font CPTs — deletion is immediate.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-fonts',
 				'sub_group'           => 'font-families',
 				'sub_group_label'     => __( 'Font Families', 'acrossai-core-abilities' ),

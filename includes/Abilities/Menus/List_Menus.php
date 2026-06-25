@@ -13,6 +13,7 @@ class List_Menus extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Menus', 'acrossai-core-abilities' ),
 				'description'         => __( 'List nav menus via GET /wp/v2/menus.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-menus',
 				'sub_group'           => 'menus',
 				'sub_group_label'     => __( 'Menus', 'acrossai-core-abilities' ),

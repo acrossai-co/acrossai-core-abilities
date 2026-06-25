@@ -14,6 +14,7 @@ class Cron_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Cron Jobs', 'acrossai-core-abilities' ),
 				'description'         => __( 'List every scheduled WP-Cron event via _get_cron_array(), flattened to one row per event with timestamp, hook, schedule, interval, and args.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Cron Jobs', 'acrossai-core-abilities' ),

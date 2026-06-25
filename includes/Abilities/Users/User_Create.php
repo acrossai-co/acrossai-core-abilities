@@ -13,6 +13,7 @@ class User_Create extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create User', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a new WordPress user. If no password is provided, a strong one is generated and returned.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-users',
 				'sub_group'           => 'users',
 				'sub_group_label'     => __( 'Users', 'acrossai-core-abilities' ),

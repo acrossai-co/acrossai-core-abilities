@@ -13,6 +13,7 @@ class Delete_Cpt_Item extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete CPT Item', 'acrossai-core-abilities' ),
 				'description'         => __( 'Delete a custom post type record. Defaults to trash; pass force=true to delete permanently.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'cpt',
 				'sub_group_label'     => __( 'Custom Post Types', 'acrossai-core-abilities' ),

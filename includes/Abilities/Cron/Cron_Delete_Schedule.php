@@ -19,6 +19,7 @@ class Cron_Delete_Schedule extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Custom Schedule', 'acrossai-core-abilities' ),
 				'description'         => __( 'Remove a custom schedule previously registered by cron-create-schedule. Built-in and plugin-defined schedules are not affected.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'delete',
 				'sub_group_label'     => __( 'Delete Cron Jobs', 'acrossai-core-abilities' ),

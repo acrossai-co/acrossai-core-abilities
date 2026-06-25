@@ -13,6 +13,7 @@ class Db_Explain extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Explain Query', 'acrossai-core-abilities' ),
 				'description'         => __( 'Runs EXPLAIN on a SELECT query and returns the MySQL query execution plan. Useful for diagnosing slow queries.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-database',
 				'sub_group'           => 'queries',
 				'sub_group_label'     => __( 'Queries', 'acrossai-core-abilities' ),

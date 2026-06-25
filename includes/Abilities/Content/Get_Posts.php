@@ -17,6 +17,7 @@ class Get_Posts extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Posts', 'acrossai-core-abilities' ),
 				'description'         => __( 'List posts of any post type via WP_Query — supports search, pagination, status filter, ordering, and a simple meta key/value filter.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'posts',
 				'sub_group_label'     => __( 'Posts', 'acrossai-core-abilities' ),

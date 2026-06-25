@@ -33,6 +33,7 @@ class Wp_Config_Edit extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Edit wp-config.php', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates the value of an existing non-sensitive constant in wp-config.php. Protected credential and secret constants cannot be modified.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-file-manager',
 				'sub_group'           => 'wp-config',
 				'sub_group_label'     => __( 'WP Config', 'acrossai-core-abilities' ),

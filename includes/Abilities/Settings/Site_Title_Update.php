@@ -13,6 +13,7 @@ class Site_Title_Update extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Site Title', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates the site title (the "blogname" option). Whitespace is trimmed; the value cannot be empty.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-settings',
 				'sub_group'           => 'site-identity',
 				'sub_group_label'     => __( 'Site Identity', 'acrossai-core-abilities' ),

@@ -13,6 +13,7 @@ class Get_Page extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Page', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a single page by ID via get_post(); errors if the post is not of type "page".', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'pages',
 				'sub_group_label'     => __( 'Pages', 'acrossai-core-abilities' ),

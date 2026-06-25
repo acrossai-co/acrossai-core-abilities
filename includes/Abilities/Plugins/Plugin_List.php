@@ -14,6 +14,7 @@ class Plugin_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Plugins', 'acrossai-core-abilities' ),
 				'description'         => __( 'List all installed WordPress plugins, optionally filtered by status.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-plugins',
 				'sub_group'           => 'info',
 				'sub_group_label'     => __( 'Info', 'acrossai-core-abilities' ),

@@ -14,6 +14,7 @@ class File_Delete extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete File', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deletes a file within the WordPress installation. Path must be relative to ABSPATH.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-file-manager',
 				'sub_group'           => 'files',
 				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),

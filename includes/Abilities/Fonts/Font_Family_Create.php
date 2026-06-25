@@ -24,6 +24,7 @@ class Font_Family_Create extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Font Family', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a Font Library font family (wp_font_family CPT). Requires name, slug, and fontFamily — matches the theme.json font family preset shape.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-fonts',
 				'sub_group'           => 'font-families',
 				'sub_group_label'     => __( 'Font Families', 'acrossai-core-abilities' ),

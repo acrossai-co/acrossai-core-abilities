@@ -17,6 +17,7 @@ class Permalink_Get extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Permalink Structure', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns the current permalink_structure, the matching preset name (plain, day-and-name, month-and-name, numeric, post-name, or custom), plus category_base and tag_base.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-settings',
 				'sub_group'           => 'permalinks',
 				'sub_group_label'     => __( 'Permalinks', 'acrossai-core-abilities' ),

@@ -32,6 +32,7 @@ class Global_Styles_Update extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Global Style', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates Global Styles. By default deep-merges new data into the existing record; pass merge=false to replace. Use "section" + "data" to update one section only. Supports cross-source migration via migrate_to.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'global-styles',
 				'sub_group_label'     => __( 'Global Styles', 'acrossai-core-abilities' ),

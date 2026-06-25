@@ -13,6 +13,7 @@ class Cache_Flush extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Flush Object Cache', 'acrossai-core-abilities' ),
 				'description'         => __( 'Flushes the entire WordPress object cache via wp_cache_flush(). Useful after data changes when stale cached values may be served.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cache',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {

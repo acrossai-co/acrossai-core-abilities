@@ -13,6 +13,7 @@ class Theme_Structure_Read extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Read Theme Structure', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists all files within a theme directory. Defaults to the active theme when no slug is provided.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-themes',
 				'sub_group'           => 'files',
 				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),

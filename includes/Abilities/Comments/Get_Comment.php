@@ -13,6 +13,7 @@ class Get_Comment extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Comment', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a comment via GET /wp/v2/comments/{id}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-comments',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

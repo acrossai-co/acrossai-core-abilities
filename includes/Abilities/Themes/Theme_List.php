@@ -14,6 +14,7 @@ class Theme_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Themes', 'acrossai-core-abilities' ),
 				'description'         => __( 'List all installed WordPress themes, optionally filtered by status.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-themes',
 				'sub_group'           => 'info',
 				'sub_group_label'     => __( 'Info', 'acrossai-core-abilities' ),

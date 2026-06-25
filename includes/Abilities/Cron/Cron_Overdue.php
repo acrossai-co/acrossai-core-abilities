@@ -19,6 +19,7 @@ class Cron_Overdue extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Overdue Cron Jobs', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return scheduled events whose timestamp is already in the past — useful to detect a stalled WP-Cron loopback or DISABLE_WP_CRON without a real cron driver.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Cron Jobs', 'acrossai-core-abilities' ),

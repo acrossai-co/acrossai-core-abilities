@@ -17,6 +17,7 @@ class Delete_Post extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Post', 'acrossai-core-abilities' ),
 				'description'         => __( 'Delete a post (any post type) via wp_delete_post(). Defaults to trash; pass force=true to delete permanently.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'posts',
 				'sub_group_label'     => __( 'Posts', 'acrossai-core-abilities' ),

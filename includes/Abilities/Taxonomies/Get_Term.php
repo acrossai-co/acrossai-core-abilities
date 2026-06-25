@@ -13,6 +13,7 @@ class Get_Term extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Term', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a single term in a taxonomy via GET /wp/v2/{rest_base}/{id}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-taxonomies',
 				'sub_group'           => 'terms',
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),

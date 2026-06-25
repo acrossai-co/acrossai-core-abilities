@@ -13,6 +13,7 @@ class Get_Post_Revisions extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Post Revisions', 'acrossai-core-abilities' ),
 				'description'         => __( 'List all stored revisions for a post by ID. Autosaves are hidden by default; pass include_autosaves=true to surface them.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'posts',
 				'sub_group_label'     => __( 'Posts', 'acrossai-core-abilities' ),

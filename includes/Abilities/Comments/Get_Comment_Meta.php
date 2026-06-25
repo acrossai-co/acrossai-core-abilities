@@ -13,6 +13,7 @@ class Get_Comment_Meta extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Comment Meta', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch the REST-exposed meta map for a comment via GET /wp/v2/comments/{id} (only keys registered with register_meta show_in_rest=true).', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-comments',
 				'sub_group'           => 'meta',
 				'sub_group_label'     => __( 'Meta', 'acrossai-core-abilities' ),

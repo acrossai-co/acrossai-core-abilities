@@ -13,6 +13,7 @@ class Update_Page extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Page', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update an existing page (post_type=page) via wp_update_post(). Only the supplied fields are changed.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'pages',
 				'sub_group_label'     => __( 'Pages', 'acrossai-core-abilities' ),

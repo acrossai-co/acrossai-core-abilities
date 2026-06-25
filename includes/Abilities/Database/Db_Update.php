@@ -13,6 +13,7 @@ class Db_Update extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Rows', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates rows matching the where clause using $wpdb->update() (values are auto-escaped). Requires a non-empty where to prevent accidental full-table updates.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-database',
 				'sub_group'           => 'queries',
 				'sub_group_label'     => __( 'Queries', 'acrossai-core-abilities' ),

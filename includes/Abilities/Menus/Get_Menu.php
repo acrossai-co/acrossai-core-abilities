@@ -13,6 +13,7 @@ class Get_Menu extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Menu', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a nav menu via GET /wp/v2/menus/{id}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-menus',
 				'sub_group'           => 'menus',
 				'sub_group_label'     => __( 'Menus', 'acrossai-core-abilities' ),

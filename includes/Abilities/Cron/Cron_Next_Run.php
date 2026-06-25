@@ -13,6 +13,7 @@ class Cron_Next_Run extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Next Run Time', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return the next scheduled run timestamp for a hook (and optional args) via wp_next_scheduled().', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Cron Jobs', 'acrossai-core-abilities' ),

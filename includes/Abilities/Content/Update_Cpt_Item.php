@@ -13,6 +13,7 @@ class Update_Cpt_Item extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update CPT Item', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update a custom post type record via wp_update_post(). post_type is validated against the post; only supplied fields are touched.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'cpt',
 				'sub_group_label'     => __( 'Custom Post Types', 'acrossai-core-abilities' ),

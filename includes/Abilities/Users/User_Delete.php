@@ -14,6 +14,7 @@ class User_Delete extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete User', 'acrossai-core-abilities' ),
 				'description'         => __( 'Delete a WordPress user. Optionally reassign their content to another user.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-users',
 				'sub_group'           => 'users',
 				'sub_group_label'     => __( 'Users', 'acrossai-core-abilities' ),

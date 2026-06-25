@@ -13,6 +13,7 @@ class Cron_Delete_All_By_Hook extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete All Cron Jobs By Hook', 'acrossai-core-abilities' ),
 				'description'         => __( 'Unschedule every event for the given hook (across all args sets) via wp_unschedule_hook(). Returns the number of events removed.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'delete',
 				'sub_group_label'     => __( 'Delete Cron Jobs', 'acrossai-core-abilities' ),

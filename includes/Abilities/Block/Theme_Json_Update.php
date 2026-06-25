@@ -26,6 +26,7 @@ class Theme_Json_Update extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update theme.json', 'acrossai-core-abilities' ),
 				'description'         => __( 'Writes a theme.json file directly. Defaults to the active child theme (or single theme); refuses to edit the parent theme. By default deep-merges into the existing file; pass merge=false to replace.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'theme-json-settings',
 				'sub_group_label'     => __( 'theme.json Settings', 'acrossai-core-abilities' ),

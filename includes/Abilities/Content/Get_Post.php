@@ -16,6 +16,7 @@ class Get_Post extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Post', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a post (any post type) by ID via get_post().', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'posts',
 				'sub_group_label'     => __( 'Posts', 'acrossai-core-abilities' ),

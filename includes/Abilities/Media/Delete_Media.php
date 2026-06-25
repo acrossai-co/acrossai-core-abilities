@@ -13,6 +13,7 @@ class Delete_Media extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Media', 'acrossai-core-abilities' ),
 				'description'         => __( 'Permanently delete a media attachment via DELETE /wp/v2/media/{id}. Attachments do not support trash.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-media',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

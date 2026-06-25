@@ -32,6 +32,7 @@ class Global_Styles_Create extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Global Style', 'acrossai-core-abilities' ),
 				'description'         => __( 'Creates Global Styles for a theme. Defaults to the database (wp_global_styles). Pass source=child_theme / theme / plugin to write theme.json. Provide either "content" (full theme.json JSON object or string) or "section" + "data" to seed a single section.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'global-styles',
 				'sub_group_label'     => __( 'Global Styles', 'acrossai-core-abilities' ),

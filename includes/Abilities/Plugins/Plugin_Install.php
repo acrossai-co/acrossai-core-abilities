@@ -15,6 +15,7 @@ class Plugin_Install extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Install Plugin', 'acrossai-core-abilities' ),
 				'description'         => __( 'Install a plugin from the WordPress.org plugin directory by name or slug.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-plugins',
 				'sub_group'           => 'lifecycle',
 				'sub_group_label'     => __( 'Lifecycle', 'acrossai-core-abilities' ),

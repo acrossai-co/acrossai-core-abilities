@@ -20,6 +20,7 @@ class Font_Face_Delete extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Font Face', 'acrossai-core-abilities' ),
 				'description'         => __( 'Permanently delete a Font Library font face under a given font family. Trash is not supported for font CPTs — deletion is immediate.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-fonts',
 				'sub_group'           => 'font-faces',
 				'sub_group_label'     => __( 'Font Faces', 'acrossai-core-abilities' ),

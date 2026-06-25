@@ -14,6 +14,7 @@ class Debug_Log_Clear extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Clear Debug Log', 'acrossai-core-abilities' ),
 				'description'         => __( 'Truncates wp-content/debug.log to zero bytes.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-file-manager',
 				'sub_group'           => 'debug',
 				'sub_group_label'     => __( 'Debug', 'acrossai-core-abilities' ),

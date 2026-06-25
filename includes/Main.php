@@ -165,7 +165,7 @@ final class Main {
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_URL', plugin_dir_url( \ACROSSAI_CORE_ABILITIES_PLUGIN_FILE ) );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME_SLUG', $this->plugin_name );
 		$this->define( 'ACROSSAI_CORE_ABILITIES_PLUGIN_NAME', 'Acrossai Core Abilities' );
-		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.8' );
+		$this->define( 'ACROSSAI_CORE_ABILITIES_VERSION', '0.0.9' );
 	}
 
 	/**

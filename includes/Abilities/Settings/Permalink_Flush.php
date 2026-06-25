@@ -20,6 +20,7 @@ class Permalink_Flush extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Reset / Flush Permalinks', 'acrossai-core-abilities' ),
 				'description'         => __( 'Rebuilds WordPress rewrite rules — useful after registering custom post types, taxonomies, or rewrite endpoints. Pass hard=true to also regenerate .htaccess (Apache) where supported.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-settings',
 				'sub_group'           => 'permalinks',
 				'sub_group_label'     => __( 'Permalinks', 'acrossai-core-abilities' ),

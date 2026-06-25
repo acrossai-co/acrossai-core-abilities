@@ -19,6 +19,7 @@ class Cron_Get extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Cron Job Details', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return all scheduled WP-Cron events for a given hook name (multiple instances possible — different args, recurring + one-off, etc.).', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Cron Jobs', 'acrossai-core-abilities' ),

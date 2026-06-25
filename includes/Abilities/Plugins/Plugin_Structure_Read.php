@@ -13,6 +13,7 @@ class Plugin_Structure_Read extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Read Plugin Structure', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists all files within a plugin directory. Provide a plugin slug (folder name) or leave empty to list top-level plugin directories.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-plugins',
 				'sub_group'           => 'files',
 				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),

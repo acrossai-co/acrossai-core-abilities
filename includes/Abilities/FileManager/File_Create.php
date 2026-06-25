@@ -14,6 +14,7 @@ class File_Create extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create File', 'acrossai-core-abilities' ),
 				'description'         => __( 'Creates a new file within the WordPress installation. Fails if the file already exists. Path must be relative to ABSPATH.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-file-manager',
 				'sub_group'           => 'files',
 				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),

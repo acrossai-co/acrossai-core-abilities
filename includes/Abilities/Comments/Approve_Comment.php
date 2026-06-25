@@ -13,6 +13,7 @@ class Approve_Comment extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Approve Comment', 'acrossai-core-abilities' ),
 				'description'         => __( 'Approve a comment via POST /wp/v2/comments/{id} with status=approved.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-comments',
 				'sub_group'           => 'moderation',
 				'sub_group_label'     => __( 'Moderation', 'acrossai-core-abilities' ),

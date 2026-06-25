@@ -13,6 +13,7 @@ class Update_Menu_Item extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Menu Item', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update a menu item via POST /wp/v2/menu-items/{id}. Only the supplied fields are touched.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-menus',
 				'sub_group'           => 'menu-items',
 				'sub_group_label'     => __( 'Menu Items', 'acrossai-core-abilities' ),

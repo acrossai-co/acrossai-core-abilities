@@ -13,6 +13,7 @@ class Tagline_Update extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Tagline', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates the site tagline (the "blogdescription" option). Empty values are accepted to clear the tagline.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-settings',
 				'sub_group'           => 'site-identity',
 				'sub_group_label'     => __( 'Site Identity', 'acrossai-core-abilities' ),

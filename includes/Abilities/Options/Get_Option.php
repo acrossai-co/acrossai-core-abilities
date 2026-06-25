@@ -13,6 +13,7 @@ class Get_Option extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Option', 'acrossai-core-abilities' ),
 				'description'         => __( 'Read a wp_options row via get_option().', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-options',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

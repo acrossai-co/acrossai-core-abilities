@@ -18,6 +18,7 @@ class Create_Cpt_Item extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create CPT Item', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a custom post type record. post_type is required and must be registered.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'cpt',
 				'sub_group_label'     => __( 'Custom Post Types', 'acrossai-core-abilities' ),

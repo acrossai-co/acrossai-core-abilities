@@ -14,6 +14,7 @@ class Je_Get_Options_Page extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Options Page', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return a Jet Engine options page by slug, including the stored field values from wp_options.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'options-pages',
 				'sub_group_label'     => __( 'Options Pages', 'acrossai-core-abilities' ),

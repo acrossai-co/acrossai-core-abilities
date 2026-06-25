@@ -16,6 +16,7 @@ class Create_Page extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Page', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a page via wp_insert_post() (post_type=page). Supports parent and menu_order for hierarchical layouts.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'pages',
 				'sub_group_label'     => __( 'Pages', 'acrossai-core-abilities' ),

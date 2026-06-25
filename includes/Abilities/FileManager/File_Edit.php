@@ -14,6 +14,7 @@ class File_Edit extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Edit File', 'acrossai-core-abilities' ),
 				'description'         => __( 'Overwrites the contents of an existing file within the WordPress installation. Path must be relative to ABSPATH.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-file-manager',
 				'sub_group'           => 'files',
 				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),

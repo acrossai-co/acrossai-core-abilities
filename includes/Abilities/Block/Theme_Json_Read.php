@@ -19,6 +19,7 @@ class Theme_Json_Read extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Read theme.json', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns the raw parsed contents of a theme.json file. Defaults to the active stylesheet; pass theme_slug to target a specific theme folder, or theme_type=parent to read the parent theme when a child is active.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'theme-json-settings',
 				'sub_group_label'     => __( 'theme.json Settings', 'acrossai-core-abilities' ),

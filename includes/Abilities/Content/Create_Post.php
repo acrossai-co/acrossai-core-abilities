@@ -16,6 +16,7 @@ class Create_Post extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Post', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a post (or any post-type record) via wp_insert_post(). Defaults post_type to "post".', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'posts',
 				'sub_group_label'     => __( 'Posts', 'acrossai-core-abilities' ),

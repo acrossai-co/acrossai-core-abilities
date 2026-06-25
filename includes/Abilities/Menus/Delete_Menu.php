@@ -13,6 +13,7 @@ class Delete_Menu extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Menu', 'acrossai-core-abilities' ),
 				'description'         => __( 'Delete a nav menu via DELETE /wp/v2/menus/{id}. Menus do not support trash — force=true is sent implicitly.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-menus',
 				'sub_group'           => 'menus',
 				'sub_group_label'     => __( 'Menus', 'acrossai-core-abilities' ),

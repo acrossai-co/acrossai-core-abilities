@@ -28,6 +28,7 @@ class Template_Part_Create extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Block Template Part', 'acrossai-core-abilities' ),
 				'description'         => __( 'Creates a block template part. Defaults to the database (wp_template_part). Pass source=child_theme to write to the child theme\'s /parts dir, source=theme (with theme_slug) to write to a specific theme folder, or source=plugin (with plugin_slug) to write to a plugin\'s /parts dir.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'template-parts',
 				'sub_group_label'     => __( 'Template Parts', 'acrossai-core-abilities' ),

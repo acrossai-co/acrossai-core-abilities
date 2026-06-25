@@ -13,6 +13,7 @@ class Tables_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Database Tables', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists all tables in the database with engine, approximate row count, and storage size.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-database',
 				'sub_group'           => 'schema',
 				'sub_group_label'     => __( 'Schema', 'acrossai-core-abilities' ),

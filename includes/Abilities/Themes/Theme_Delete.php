@@ -15,6 +15,7 @@ class Theme_Delete extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Theme', 'acrossai-core-abilities' ),
 				'description'         => __( 'Delete an installed WordPress theme by name, stylesheet, or partial match. The active theme cannot be deleted.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-themes',
 				'sub_group'           => 'lifecycle',
 				'sub_group_label'     => __( 'Lifecycle', 'acrossai-core-abilities' ),

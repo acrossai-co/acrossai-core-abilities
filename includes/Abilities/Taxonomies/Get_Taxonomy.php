@@ -13,6 +13,7 @@ class Get_Taxonomy extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Taxonomy', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a single taxonomy via GET /wp/v2/taxonomies/{taxonomy}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-taxonomies',
 				'sub_group'           => 'taxonomies',
 				'sub_group_label'     => __( 'Taxonomies', 'acrossai-core-abilities' ),

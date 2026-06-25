@@ -25,6 +25,7 @@ class Global_Styles_Read extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Read Global Style', 'acrossai-core-abilities' ),
 				'description'         => __( 'Reads a Global Styles record (or one section of it) for a theme. Defaults to the database; falls back to theme.json defaults when no DB record exists. Pass "section" to return only colors / typography / spacing / layout / blockStyles / customCss.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'global-styles',
 				'sub_group_label'     => __( 'Global Styles', 'acrossai-core-abilities' ),

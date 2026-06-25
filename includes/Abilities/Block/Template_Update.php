@@ -31,6 +31,7 @@ class Template_Update extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Block Template', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates an existing block template. Detects the location automatically; pass source / theme_type / plugin_slug to disambiguate. Supports rename via new_slug and cross-source migration via migrate_to. Refuses parent-theme writes — copy to child or DB first.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'templates',
 				'sub_group_label'     => __( 'Templates', 'acrossai-core-abilities' ),

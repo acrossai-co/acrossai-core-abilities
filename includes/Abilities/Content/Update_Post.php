@@ -17,6 +17,7 @@ class Update_Post extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Post', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update an existing post (any post type) via wp_update_post(). Only the supplied fields are changed.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'posts',
 				'sub_group_label'     => __( 'Posts', 'acrossai-core-abilities' ),

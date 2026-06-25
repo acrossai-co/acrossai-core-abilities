@@ -28,6 +28,7 @@ class Template_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Block Templates', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists block templates across the database (wp_template), the active theme\'s /templates/*.html, the parent theme, and installed plugin /templates dirs. Filter by source, theme_type, plugin_slug, or exact slug.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'templates',
 				'sub_group_label'     => __( 'Templates', 'acrossai-core-abilities' ),

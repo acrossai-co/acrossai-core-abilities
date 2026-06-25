@@ -14,6 +14,7 @@ class Plugin_Deactivate extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Deactivate Plugin', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deactivate an active WordPress plugin by name, slug, or partial match.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-plugins',
 				'sub_group'           => 'lifecycle',
 				'sub_group_label'     => __( 'Lifecycle', 'acrossai-core-abilities' ),

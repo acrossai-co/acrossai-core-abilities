@@ -23,6 +23,7 @@ class Site_Logo_Update extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Site Logo', 'acrossai-core-abilities' ),
 				'description'         => __( 'Sets the site (custom) logo to a media library attachment_id. Pass 0 to remove. Stored as the `custom_logo` theme_mod; the active theme must support custom-logo for it to render.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-settings',
 				'sub_group'           => 'site-identity',
 				'sub_group_label'     => __( 'Site Identity', 'acrossai-core-abilities' ),

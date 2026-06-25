@@ -27,6 +27,7 @@ class Block_Style_Variations_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Block Style Variations', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists Block Style Variations across the database (wp_global_styles) and theme/plugin /styles directories. Each variation reports its theme, slug, customised sections, and whether it is the active variation.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'block-style-variations',
 				'sub_group_label'     => __( 'Block Style Variations', 'acrossai-core-abilities' ),

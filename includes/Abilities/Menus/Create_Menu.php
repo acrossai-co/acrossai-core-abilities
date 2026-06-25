@@ -13,6 +13,7 @@ class Create_Menu extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Menu', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a new nav menu via POST /wp/v2/menus.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-menus',
 				'sub_group'           => 'menus',
 				'sub_group_label'     => __( 'Menus', 'acrossai-core-abilities' ),

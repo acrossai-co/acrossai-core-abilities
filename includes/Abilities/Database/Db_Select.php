@@ -13,6 +13,7 @@ class Db_Select extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Run SELECT Query', 'acrossai-core-abilities' ),
 				'description'         => __( 'Executes a read-only SQL query (SELECT, SHOW, DESCRIBE, EXPLAIN). Write statements are rejected. Results are capped by the limit parameter.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-database',
 				'sub_group'           => 'queries',
 				'sub_group_label'     => __( 'Queries', 'acrossai-core-abilities' ),

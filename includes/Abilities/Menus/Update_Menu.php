@@ -13,6 +13,7 @@ class Update_Menu extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Menu', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update a nav menu via POST /wp/v2/menus/{id}. Only the supplied fields are touched.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-menus',
 				'sub_group'           => 'menus',
 				'sub_group_label'     => __( 'Menus', 'acrossai-core-abilities' ),

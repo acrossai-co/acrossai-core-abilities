@@ -13,6 +13,7 @@ class Db_Insert extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Insert Row', 'acrossai-core-abilities' ),
 				'description'         => __( 'Inserts a single row into a database table using $wpdb->insert() (values are auto-escaped). Not idempotent — each call adds a new row.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-database',
 				'sub_group'           => 'queries',
 				'sub_group_label'     => __( 'Queries', 'acrossai-core-abilities' ),
