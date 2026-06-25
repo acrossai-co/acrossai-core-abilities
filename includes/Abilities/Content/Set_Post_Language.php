@@ -14,6 +14,7 @@ class Set_Post_Language extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Set Post Language', 'acrossai-core-abilities' ),
 				'description'         => __( 'Assign a language code to a post. Polylang uses pll_set_post_language(); WPML uses the wpml_set_element_language_details action.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'multilanguage',
 				'sub_group_label'     => __( 'Multilanguage', 'acrossai-core-abilities' ),

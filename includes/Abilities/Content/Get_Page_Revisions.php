@@ -13,6 +13,7 @@ class Get_Page_Revisions extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Page Revisions', 'acrossai-core-abilities' ),
 				'description'         => __( 'List all stored revisions for a page by ID. Autosaves are hidden by default; pass include_autosaves=true to surface them.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'pages',
 				'sub_group_label'     => __( 'Pages', 'acrossai-core-abilities' ),

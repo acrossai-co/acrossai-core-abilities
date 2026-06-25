@@ -13,6 +13,7 @@ class Cron_List_Schedules extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Schedules', 'acrossai-core-abilities' ),
 				'description'         => __( 'List every registered cron schedule via wp_get_schedules() — includes core schedules (hourly/twicedaily/daily/weekly), schedules added by other plugins, and persisted custom schedules.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Cron Jobs', 'acrossai-core-abilities' ),

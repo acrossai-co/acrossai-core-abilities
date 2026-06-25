@@ -16,6 +16,7 @@ class Update_Post_Meta extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Post Meta', 'acrossai-core-abilities' ),
 				'description'         => __( 'Set a post meta value via update_post_meta(). If the meta is registered via register_meta() and protected, the request will be rejected.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'posts',
 				'sub_group_label'     => __( 'Posts', 'acrossai-core-abilities' ),

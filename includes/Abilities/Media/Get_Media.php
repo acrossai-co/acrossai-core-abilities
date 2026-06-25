@@ -13,6 +13,7 @@ class Get_Media extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Media', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a media item via GET /wp/v2/media/{id}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-media',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

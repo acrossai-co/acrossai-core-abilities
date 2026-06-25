@@ -13,6 +13,7 @@ class Update_Check extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Check Updates', 'acrossai-core-abilities' ),
 				'description'         => __( 'Check for available WordPress core, plugin, and theme updates.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-plugins',
 				'sub_group'           => 'info',
 				'sub_group_label'     => __( 'Info', 'acrossai-core-abilities' ),

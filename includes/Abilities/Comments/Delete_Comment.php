@@ -13,6 +13,7 @@ class Delete_Comment extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Comment', 'acrossai-core-abilities' ),
 				'description'         => __( 'Delete a comment via DELETE /wp/v2/comments/{id}. Defaults to trash; pass force=true to delete permanently.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-comments',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

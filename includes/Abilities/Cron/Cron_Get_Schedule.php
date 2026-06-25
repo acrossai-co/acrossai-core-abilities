@@ -13,6 +13,7 @@ class Cron_Get_Schedule extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Schedule Details', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return a single schedule definition by name (interval + display) from wp_get_schedules().', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Cron Jobs', 'acrossai-core-abilities' ),

@@ -13,6 +13,7 @@ class Cache_Rewrite_Flush extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Flush Rewrite Rules', 'acrossai-core-abilities' ),
 				'description'         => __( 'Flushes WordPress rewrite rules via flush_rewrite_rules(). Use hard=true (default) to also regenerate the .htaccess file, or hard=false for an in-memory-only rebuild.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cache',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {

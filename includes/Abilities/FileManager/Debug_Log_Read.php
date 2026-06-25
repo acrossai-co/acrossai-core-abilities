@@ -13,6 +13,7 @@ class Debug_Log_Read extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Read Debug Log', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns the contents of wp-content/debug.log. Use the lines parameter to limit output to the last N lines.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-file-manager',
 				'sub_group'           => 'debug',
 				'sub_group_label'     => __( 'Debug', 'acrossai-core-abilities' ),

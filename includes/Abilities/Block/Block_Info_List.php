@@ -27,6 +27,7 @@ class Block_Info_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Blocks', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists every block registered with WP_Block_Type_Registry. Filter by category, keyword, source, or any combination. Returns name, title, description, category, icon, keywords, and source for each block, sorted by name.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'block-info',
 				'sub_group_label'     => __( 'Block Info', 'acrossai-core-abilities' ),

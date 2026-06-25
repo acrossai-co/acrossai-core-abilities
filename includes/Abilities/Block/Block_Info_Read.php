@@ -31,6 +31,7 @@ class Block_Info_Read extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Read Block', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns full details for a single registered block. Pass "section" (settings, supports, attributes, example, variations, styles, transforms) to fetch one slice instead of the whole record. Block name must be in namespace/name form (e.g. core/paragraph).', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'block-info',
 				'sub_group_label'     => __( 'Block Info', 'acrossai-core-abilities' ),

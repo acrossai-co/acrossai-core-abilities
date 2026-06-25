@@ -27,6 +27,7 @@ class Pattern_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Block Patterns', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists block patterns across all storage layers — database (wp_block CPT), theme /patterns folders (child + parent), and plugin /patterns folders. Pass "slug" to find every location that holds a specific pattern (detection step for Update / Delete).', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'patterns',
 				'sub_group_label'     => __( 'Patterns', 'acrossai-core-abilities' ),

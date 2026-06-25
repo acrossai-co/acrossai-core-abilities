@@ -13,6 +13,7 @@ class Get_Menu_Item extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Menu Item', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a menu item via GET /wp/v2/menu-items/{id}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-menus',
 				'sub_group'           => 'menu-items',
 				'sub_group_label'     => __( 'Menu Items', 'acrossai-core-abilities' ),

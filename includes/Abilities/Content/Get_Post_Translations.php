@@ -14,6 +14,7 @@ class Get_Post_Translations extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Post Translations', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return the translations of a post (language code → post ID). Detects Polylang first, then WPML; errors if neither is active.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'multilanguage',
 				'sub_group_label'     => __( 'Multilanguage', 'acrossai-core-abilities' ),

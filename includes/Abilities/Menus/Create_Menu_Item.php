@@ -13,6 +13,7 @@ class Create_Menu_Item extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Menu Item', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a menu item via POST /wp/v2/menu-items. title and (object/object_id or url) are required.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-menus',
 				'sub_group'           => 'menu-items',
 				'sub_group_label'     => __( 'Menu Items', 'acrossai-core-abilities' ),

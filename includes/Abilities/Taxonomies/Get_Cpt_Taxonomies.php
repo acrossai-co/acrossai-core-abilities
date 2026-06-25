@@ -16,6 +16,7 @@ class Get_Cpt_Taxonomies extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get CPT Taxonomies', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return the taxonomies attached to a given post type via get_object_taxonomies( $post_type, "objects" ).', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-taxonomies',
 				'sub_group'           => 'taxonomies',
 				'sub_group_label'     => __( 'Taxonomies', 'acrossai-core-abilities' ),

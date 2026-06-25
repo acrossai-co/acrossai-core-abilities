@@ -16,6 +16,7 @@ class List_Taxonomies extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Taxonomies', 'acrossai-core-abilities' ),
 				'description'         => __( 'List registered taxonomies via the core REST endpoint GET /wp/v2/taxonomies.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-taxonomies',
 				'sub_group'           => 'taxonomies',
 				'sub_group_label'     => __( 'Taxonomies', 'acrossai-core-abilities' ),

@@ -13,6 +13,7 @@ class Update_Option extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Option', 'acrossai-core-abilities' ),
 				'description'         => __( 'Write a wp_options row via update_option(). Creates the option if it does not exist.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-options',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

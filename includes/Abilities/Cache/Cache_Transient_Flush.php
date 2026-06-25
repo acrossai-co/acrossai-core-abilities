@@ -13,6 +13,7 @@ class Cache_Transient_Flush extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Flush Transients', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deletes WordPress transients. Use scope "expired" (default) to remove only expired transients, or "all" to remove every transient regardless of expiry.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cache',
 				'execute_callback'    => array( $this, 'execute' ),
 				'permission_callback' => static function (): bool {

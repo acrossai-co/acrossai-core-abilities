@@ -13,6 +13,7 @@ class Delete_Term extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Term', 'acrossai-core-abilities' ),
 				'description'         => __( 'Delete a term in a taxonomy via DELETE /wp/v2/{rest_base}/{id}. Terms do not support trash — force=true is sent implicitly.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-taxonomies',
 				'sub_group'           => 'terms',
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),

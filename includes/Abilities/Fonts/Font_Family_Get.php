@@ -20,6 +20,7 @@ class Font_Family_Get extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Font Family', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch a single Font Library font family record (wp_font_family CPT) by its post ID.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-fonts',
 				'sub_group'           => 'font-families',
 				'sub_group_label'     => __( 'Font Families', 'acrossai-core-abilities' ),

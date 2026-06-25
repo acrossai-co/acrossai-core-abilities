@@ -19,6 +19,7 @@ class Cron_Update extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Cron Job', 'acrossai-core-abilities' ),
 				'description'         => __( 'Reschedule an existing event: unschedule the original (identified by hook + old_args) and create a new one with the supplied schedule, timestamp, and args.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'write',
 				'sub_group_label'     => __( 'Write Cron Jobs', 'acrossai-core-abilities' ),

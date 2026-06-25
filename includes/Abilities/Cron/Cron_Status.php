@@ -18,6 +18,7 @@ class Cron_Status extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Cron Status', 'acrossai-core-abilities' ),
 				'description'         => __( 'Report whether WP-Cron is disabled (DISABLE_WP_CRON) or running in alternate mode (ALTERNATE_WP_CRON), the wp-cron.php URL, and the current server timestamp.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Cron Jobs', 'acrossai-core-abilities' ),

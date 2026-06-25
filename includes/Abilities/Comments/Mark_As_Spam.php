@@ -13,6 +13,7 @@ class Mark_As_Spam extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Mark Comment as Spam', 'acrossai-core-abilities' ),
 				'description'         => __( 'Flag a comment as spam via POST /wp/v2/comments/{id} with status=spam.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-comments',
 				'sub_group'           => 'moderation',
 				'sub_group_label'     => __( 'Moderation', 'acrossai-core-abilities' ),

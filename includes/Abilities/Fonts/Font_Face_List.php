@@ -20,6 +20,7 @@ class Font_Face_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Font Faces', 'acrossai-core-abilities' ),
 				'description'         => __( 'List Font Library font faces (wp_font_face CPT) registered under a specific font family.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-fonts',
 				'sub_group'           => 'font-faces',
 				'sub_group_label'     => __( 'Font Faces', 'acrossai-core-abilities' ),

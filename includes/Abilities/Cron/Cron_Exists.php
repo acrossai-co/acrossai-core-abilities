@@ -13,6 +13,7 @@ class Cron_Exists extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Check If Cron Job Exists', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return whether a scheduled event exists for a hook (and optional args). Backed by wp_next_scheduled() — true if a future run is registered.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Cron Jobs', 'acrossai-core-abilities' ),

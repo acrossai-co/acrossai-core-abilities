@@ -13,6 +13,7 @@ class Create_Term extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Term', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a term in a taxonomy via POST /wp/v2/{rest_base}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-taxonomies',
 				'sub_group'           => 'terms',
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),

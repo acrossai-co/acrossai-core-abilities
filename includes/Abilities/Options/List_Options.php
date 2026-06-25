@@ -18,6 +18,7 @@ class List_Options extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Options', 'acrossai-core-abilities' ),
 				'description'         => __( 'List wp_options rows. Defaults to names + autoload only; pass include_values=true to embed truncated option values.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-options',
 				'sub_group'           => 'search',
 				'sub_group_label'     => __( 'Search', 'acrossai-core-abilities' ),

@@ -31,6 +31,7 @@ class Block_Style_Variations_Create extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Block Style Variation', 'acrossai-core-abilities' ),
 				'description'         => __( 'Creates a Block Style Variation. Defaults to the database. Pass source=child_theme / theme / plugin to write a <slug>.json file. Provide "content" (full variation JSON) or "section"+"data" to seed one section.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'block-style-variations',
 				'sub_group_label'     => __( 'Block Style Variations', 'acrossai-core-abilities' ),

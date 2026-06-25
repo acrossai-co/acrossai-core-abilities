@@ -13,6 +13,7 @@ class Delete_Menu_Item extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Menu Item', 'acrossai-core-abilities' ),
 				'description'         => __( 'Delete a menu item via DELETE /wp/v2/menu-items/{id}. force=true is sent implicitly.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-menus',
 				'sub_group'           => 'menu-items',
 				'sub_group_label'     => __( 'Menu Items', 'acrossai-core-abilities' ),

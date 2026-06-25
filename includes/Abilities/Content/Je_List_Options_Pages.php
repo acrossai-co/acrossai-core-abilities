@@ -14,6 +14,7 @@ class Je_List_Options_Pages extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Options Pages', 'acrossai-core-abilities' ),
 				'description'         => __( 'List Jet Engine options pages (slug, name, option key, fields). Requires Jet Engine to be active.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'options-pages',
 				'sub_group_label'     => __( 'Options Pages', 'acrossai-core-abilities' ),

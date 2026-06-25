@@ -13,6 +13,7 @@ class Db_Delete extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Rows', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deletes rows matching the where clause using $wpdb->delete() (values are auto-escaped). Requires a non-empty where to prevent accidental full-table deletion.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-database',
 				'sub_group'           => 'queries',
 				'sub_group_label'     => __( 'Queries', 'acrossai-core-abilities' ),

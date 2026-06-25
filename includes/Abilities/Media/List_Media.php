@@ -13,6 +13,7 @@ class List_Media extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Media', 'acrossai-core-abilities' ),
 				'description'         => __( 'List media items via GET /wp/v2/media. Supports search, pagination, and a mime_type filter.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-media',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

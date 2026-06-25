@@ -13,6 +13,7 @@ class Unapprove_Comment extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Unapprove Comment', 'acrossai-core-abilities' ),
 				'description'         => __( 'Send a comment back to the moderation queue via POST /wp/v2/comments/{id} with status=hold.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-comments',
 				'sub_group'           => 'moderation',
 				'sub_group_label'     => __( 'Moderation', 'acrossai-core-abilities' ),

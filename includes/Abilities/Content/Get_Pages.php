@@ -17,6 +17,7 @@ class Get_Pages extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Pages', 'acrossai-core-abilities' ),
 				'description'         => __( 'List pages via get_pages(). Supports parent / child_of filters and sort_column / sort_order.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'pages',
 				'sub_group_label'     => __( 'Pages', 'acrossai-core-abilities' ),

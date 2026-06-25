@@ -21,6 +21,7 @@ class Pattern_Read extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Read Block Pattern', 'acrossai-core-abilities' ),
 				'description'         => __( 'Reads a pattern by slug from one of: db (wp_block CPT), theme /patterns folder, or plugin /patterns folder. Omit "source" to auto-detect — if the slug exists in more than one location the call fails with error_code=multiple_locations and the list of locations.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'patterns',
 				'sub_group_label'     => __( 'Patterns', 'acrossai-core-abilities' ),

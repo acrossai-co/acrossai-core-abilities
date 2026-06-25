@@ -28,6 +28,7 @@ class Template_Part_Delete extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Block Template Part', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deletes a block template part by slug. Auto-resolves the source when there\'s only one copy; pass source / theme_type / plugin_slug to disambiguate. Refuses to delete parent-theme files. When the part is referenced by templates, confirm_usage=true is required.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'template-parts',
 				'sub_group_label'     => __( 'Template Parts', 'acrossai-core-abilities' ),

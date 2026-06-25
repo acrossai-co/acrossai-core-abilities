@@ -19,6 +19,7 @@ class Site_Health_Status extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Site Health Status', 'acrossai-core-abilities' ),
 				'description'         => __( 'Run the WordPress Site Health direct tests and return the per-test results together with the good / recommended / critical counts shown on Tools → Site Health → Status. Optionally also runs async tests via their direct fallbacks.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-site-health',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Site Health', 'acrossai-core-abilities' ),

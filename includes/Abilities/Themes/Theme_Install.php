@@ -15,6 +15,7 @@ class Theme_Install extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Install Theme', 'acrossai-core-abilities' ),
 				'description'         => __( 'Install a theme from the WordPress.org theme directory by name or slug.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-themes',
 				'sub_group'           => 'lifecycle',
 				'sub_group_label'     => __( 'Lifecycle', 'acrossai-core-abilities' ),

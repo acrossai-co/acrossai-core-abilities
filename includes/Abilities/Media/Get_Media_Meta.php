@@ -17,6 +17,7 @@ class Get_Media_Meta extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Media Meta', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch the REST-exposed meta map for a media item (only keys registered with register_meta show_in_rest=true are returned).', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-media',
 				'sub_group'           => 'meta',
 				'sub_group_label'     => __( 'Meta', 'acrossai-core-abilities' ),

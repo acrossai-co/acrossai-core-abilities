@@ -13,6 +13,7 @@ class Site_Icon_Get extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Site Icon', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns the current site icon (favicon) — attachment ID plus URLs at the standard sizes (32, 192, 270, 512).', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-settings',
 				'sub_group'           => 'site-identity',
 				'sub_group_label'     => __( 'Site Identity', 'acrossai-core-abilities' ),

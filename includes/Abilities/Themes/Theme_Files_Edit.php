@@ -14,6 +14,7 @@ class Theme_Files_Edit extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Edit Theme File', 'acrossai-core-abilities' ),
 				'description'         => __( 'Overwrites the contents of a file inside a theme directory. Defaults to the active theme.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-themes',
 				'sub_group'           => 'files',
 				'sub_group_label'     => __( 'Files', 'acrossai-core-abilities' ),

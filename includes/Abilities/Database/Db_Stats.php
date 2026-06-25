@@ -13,6 +13,7 @@ class Db_Stats extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Database Stats', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns a summary of the WordPress database: version, name, table count, total size, charset, and collation.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-database',
 				'sub_group'           => 'maintenance',
 				'sub_group_label'     => __( 'Maintenance', 'acrossai-core-abilities' ),

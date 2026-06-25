@@ -25,6 +25,7 @@ class Font_Face_Create extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Font Face', 'acrossai-core-abilities' ),
 				'description'         => __( 'Create a Font Library font face (wp_font_face CPT) under an existing font family. fontFamily and src are required. src must be one or more absolute URLs — uploaded font files are not supported through this ability.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-fonts',
 				'sub_group'           => 'font-faces',
 				'sub_group_label'     => __( 'Font Faces', 'acrossai-core-abilities' ),

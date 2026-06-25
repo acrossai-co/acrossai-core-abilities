@@ -27,6 +27,7 @@ class Block_Style_Variations_Delete extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Delete Block Style Variation', 'acrossai-core-abilities' ),
 				'description'         => __( 'Deletes a Block Style Variation. Without "section", deletes the whole record/file (requires confirm=true). With "section", removes just that slice. Refuses to delete parent-theme files; active variations require confirm_active.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'block-style-variations',
 				'sub_group_label'     => __( 'Block Style Variations', 'acrossai-core-abilities' ),

@@ -13,6 +13,7 @@ class List_Comments extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Comments', 'acrossai-core-abilities' ),
 				'description'         => __( 'List comments via GET /wp/v2/comments. Supports search, post filter, status filter, and pagination.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-comments',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

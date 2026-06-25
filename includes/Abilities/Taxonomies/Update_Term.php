@@ -13,6 +13,7 @@ class Update_Term extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Term', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update a term in a taxonomy via POST /wp/v2/{rest_base}/{id}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-taxonomies',
 				'sub_group'           => 'terms',
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),

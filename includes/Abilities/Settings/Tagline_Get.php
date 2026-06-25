@@ -13,6 +13,7 @@ class Tagline_Get extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Tagline', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns the current site tagline (the "blogdescription" option — a short description shown beside the site title in many themes).', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-settings',
 				'sub_group'           => 'site-identity',
 				'sub_group_label'     => __( 'Site Identity', 'acrossai-core-abilities' ),

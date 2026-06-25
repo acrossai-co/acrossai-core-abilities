@@ -18,6 +18,7 @@ class Search_Options extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Search Options', 'acrossai-core-abilities' ),
 				'description'         => __( 'Search wp_options.option_name with a LIKE pattern. Pass exact_match=true to require an exact match.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-options',
 				'sub_group'           => 'search',
 				'sub_group_label'     => __( 'Search', 'acrossai-core-abilities' ),

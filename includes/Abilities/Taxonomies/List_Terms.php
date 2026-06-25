@@ -17,6 +17,7 @@ class List_Terms extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Terms', 'acrossai-core-abilities' ),
 				'description'         => __( 'List terms in a taxonomy via the core REST endpoint GET /wp/v2/{rest_base}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-taxonomies',
 				'sub_group'           => 'terms',
 				'sub_group_label'     => __( 'Terms', 'acrossai-core-abilities' ),

@@ -33,6 +33,7 @@ class Pattern_Update extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Block Pattern', 'acrossai-core-abilities' ),
 				'description'         => __( 'Updates a block pattern at its current storage location. Auto-detects where it lives; on multi-location ambiguity returns error_code=multiple_locations with the list. For parent-theme-only patterns, copies the file to the child theme first and edits the copy (the parent file is never touched). Pass new_slug to rename (old slug is removed after the new one is written), or target_source to migrate (delete_original controls cleanup).', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'patterns',
 				'sub_group_label'     => __( 'Patterns', 'acrossai-core-abilities' ),

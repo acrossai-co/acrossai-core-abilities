@@ -18,6 +18,7 @@ class List_Post_Types extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Post Types', 'acrossai-core-abilities' ),
 				'description'         => __( 'List registered post types via get_post_types( objects ). Filterable by public/show_in_rest/hierarchical flags.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'cpt',
 				'sub_group_label'     => __( 'Custom Post Types', 'acrossai-core-abilities' ),

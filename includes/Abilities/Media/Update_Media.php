@@ -13,6 +13,7 @@ class Update_Media extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Update Media', 'acrossai-core-abilities' ),
 				'description'         => __( 'Update an attachment\'s title, caption, description, or alt text via POST /wp/v2/media/{id}.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-media',
 				'sub_group'           => 'manage',
 				'sub_group_label'     => __( 'Manage', 'acrossai-core-abilities' ),

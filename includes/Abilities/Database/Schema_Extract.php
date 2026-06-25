@@ -13,6 +13,7 @@ class Schema_Extract extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Extract Database Schema', 'acrossai-core-abilities' ),
 				'description'         => __( 'Returns the full schema for every table in the database: columns, indexes, and CREATE TABLE SQL.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-database',
 				'sub_group'           => 'schema',
 				'sub_group_label'     => __( 'Schema', 'acrossai-core-abilities' ),

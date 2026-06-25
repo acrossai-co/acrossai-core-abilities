@@ -19,6 +19,7 @@ class Cron_Create_Schedule extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Create Custom Schedule', 'acrossai-core-abilities' ),
 				'description'         => __( 'Register a persistent custom cron schedule. The schedule is saved to wp_options and added back via the cron_schedules filter on every load.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-cron',
 				'sub_group'           => 'write',
 				'sub_group_label'     => __( 'Write Cron Jobs', 'acrossai-core-abilities' ),

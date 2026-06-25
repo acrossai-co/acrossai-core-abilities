@@ -28,6 +28,7 @@ class Global_Styles_List extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'List Global Styles', 'acrossai-core-abilities' ),
 				'description'         => __( 'Lists Global Styles records across the database (wp_global_styles) and theme.json files in themes and plugins. Each record reports its theme association, which sections are customised, and whether it is the copy WordPress is currently serving.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-block',
 				'sub_group'           => 'global-styles',
 				'sub_group_label'     => __( 'Global Styles', 'acrossai-core-abilities' ),

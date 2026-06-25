@@ -23,7 +23,7 @@ namespace Acrossai_Core_Abilities;
  * Plugin Name:       Acrossai Core Abilities
  * Plugin URI:        https://github.com/WPBoilerplate/acrossai-core-abilities
  * Description:       Acrossai Core Abilities by WPBoilerplate
- * Version:           0.0.7
+ * Version:           0.0.9
  * Requires at least: 6.9
  * Requires PHP:	  8.0
  * Author:            WPBoilerplate

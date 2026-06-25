@@ -19,6 +19,7 @@ class Site_Health_Info extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Site Health Info', 'acrossai-core-abilities' ),
 				'description'         => __( 'Return the Site Health Info report (WP_Debug_Data::debug_data()) — server, database, WordPress, themes, plugins, media, filesystem, constants and paths/sizes. Optionally filter to specific sections.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-site-health',
 				'sub_group'           => 'read',
 				'sub_group_label'     => __( 'Read Site Health', 'acrossai-core-abilities' ),

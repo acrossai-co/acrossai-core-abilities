@@ -13,6 +13,7 @@ class Get_Cpt_Item_Revisions extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get CPT Item Revisions', 'acrossai-core-abilities' ),
 				'description'         => __( 'List all stored revisions for a custom post type item by post_type + id. Autosaves are hidden by default; pass include_autosaves=true to surface them.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'cpt',
 				'sub_group_label'     => __( 'Custom Post Types', 'acrossai-core-abilities' ),

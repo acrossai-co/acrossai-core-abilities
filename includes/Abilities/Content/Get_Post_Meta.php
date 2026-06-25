@@ -18,6 +18,7 @@ class Get_Post_Meta extends Ability_Definition {
 			'args' => array(
 				'label'               => __( 'Get Post Meta', 'acrossai-core-abilities' ),
 				'description'         => __( 'Fetch post meta via get_post_meta(). Pass key="" (the default) to retrieve every meta key for the post.', 'acrossai-core-abilities' ),
+				'tab_group'           => 'core',
 				'category'            => 'acrossai-core-abilities-content',
 				'sub_group'           => 'posts',
 				'sub_group_label'     => __( 'Posts', 'acrossai-core-abilities' ),
